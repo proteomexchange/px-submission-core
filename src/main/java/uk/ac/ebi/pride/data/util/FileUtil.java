@@ -1,9 +1,10 @@
 package uk.ac.ebi.pride.data.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Enumeration;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Utility class for file access
@@ -11,24 +12,9 @@ import java.io.InputStream;
  * @author Rui Wang
  * @version $Id$
  */
-public class FileUtil {
+public final class FileUtil {
     private FileUtil() {
     }
-
-    /**
-     * Get the extension of a file or a folder
-     *
-     * @param file given file or folder
-     * @return String  extension
-     */
-    public static String getExtension(File file) {
-        if (file.isFile()) {
-            return getFileExtension(file);
-        } else {
-            return getFolderExtension(file);
-        }
-    }
-
     /**
      * Get file extension for a given file
      *
@@ -37,6 +23,10 @@ public class FileUtil {
      */
     public static String getFileExtension(File file) {
         String fileName = file.getName();
+        return getFileExtension(fileName);
+    }
+
+    public static String getFileExtension(String fileName) {
         int mid = fileName.lastIndexOf(Constant.DOT);
         String fileNameExt = null;
         if (mid > 0) {
@@ -44,26 +34,6 @@ public class FileUtil {
         }
 
         return fileNameExt;
-    }
-
-    public static String getFolderExtension(File folder) {
-        // todo : implement
-        return null;
-    }
-
-    public static String getNameWithoutExtension(File file) {
-        // todo : implement
-        return null;
-    }
-
-    public static String getFileNameWithoutExtension(File file) {
-        // todo : implement
-        return null;
-    }
-
-    public static String getFolderName(File folder) {
-        // todo : implement
-        return null;
     }
 
     /**
@@ -99,5 +69,109 @@ public class FileUtil {
         }
 
         return false;
+    }
+
+    public static String tail(File file, int numberOfChars) throws IOException {
+        RandomAccessFile fileHandler = null;
+        try {
+            fileHandler = new java.io.RandomAccessFile(file, "r");
+            long fileLength = file.length() - 1;
+            StringBuilder sb = new StringBuilder();
+
+            for (long filePointer = fileLength; filePointer > (fileLength - numberOfChars); filePointer--) {
+                fileHandler.seek(filePointer);
+                int readByte = fileHandler.readByte();
+                sb.append((char) readByte);
+            }
+
+            return sb.reverse().toString();
+        } finally {
+            if (fileHandler != null)
+                fileHandler.close();
+        }
+    }
+
+    public static String getDecompressedFileName(File file) throws IOException {
+        String fileName = file.getName();
+        ZipFile zipFile = null;
+
+
+        try {
+            // get file as input stream
+            if (isGzipped(file)) {
+                String compressedFileName = file.getName();
+                fileName = compressedFileName.substring(0, compressedFileName.length() - 3);
+            } else if (isZipped(file) && file.exists() && file.canRead()) {
+                zipFile = new ZipFile(file);
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                // read only the first entry from zip
+                if (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    fileName = entry.getName();
+                }
+            }
+        } finally {
+            if (zipFile != null) {
+                zipFile.close();
+            }
+        }
+
+        return getRealFileName(fileName);
+    }
+
+    public static String getRealFileName(String fileName) {
+        String name = fileName;
+
+        if (name.contains("/") || name.contains("\\")) {
+            String[] parts = name.split("/");
+            name = parts[parts.length - 1];
+            parts = name.split("\\\\");
+            name = parts[parts.length - 1];
+        }
+
+        return name;
+    }
+
+    public static InputStream getFileInputStream(File file) throws IOException {
+        InputStream fileInputStream = null;
+
+        if (isGzipped(file)) {
+            fileInputStream = new GZIPInputStream(new FileInputStream(file));
+        } else if (isZipped(file)) {
+            ZipFile zipFile = new ZipFile(file);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            // read only the first entry from zip
+            if (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                fileInputStream = zipFile.getInputStream(entry);
+            }
+        } else {
+            fileInputStream = new FileInputStream(file);
+        }
+
+        return fileInputStream;
+    }
+
+    public static boolean isZipped(File file) {
+        String fileExtension = FileUtil.getFileExtension(file);
+        return "zip".equals(fileExtension);
+    }
+
+    public static boolean isGzipped(File file) {
+        String fileExtension = FileUtil.getFileExtension(file);
+        return "gz".equals(fileExtension);
+    }
+
+    public static boolean isFileEmpty(File file) throws IOException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            return reader.readLine() == null;
+        } finally {
+            if (reader != null) {
+                reader.close();
+            }
+        }
+
     }
 }

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.model.DataFile;
 import uk.ac.ebi.pride.data.model.Submission;
-import uk.ac.ebi.pride.data.util.MassSpecFileType;
+import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
 import java.io.File;
 import java.net.URL;
@@ -42,7 +42,7 @@ public class SubmissionFileParserMappingTest {
         List<DataFile> dataFiles = submission.getDataFiles();
         int cnt = 0;
         for (DataFile dataFile : dataFiles) {
-            if (dataFile.getFileType().equals(MassSpecFileType.RESULT)) {
+            if (dataFile.getFileType().equals(ProjectFileType.RESULT)) {
                 cnt ++;
             }
         }
@@ -54,7 +54,7 @@ public class SubmissionFileParserMappingTest {
         List<DataFile> dataFiles = submission.getDataFiles();
         DataFile result = dataFiles.get(0);
         assertEquals(3, result.getFileMappings().size());
-        assertEquals(9, result.getFileMappings().get(2).getId());
+        assertEquals(9, result.getFileMappings().get(2).getFileId());
     }
 
     @Test

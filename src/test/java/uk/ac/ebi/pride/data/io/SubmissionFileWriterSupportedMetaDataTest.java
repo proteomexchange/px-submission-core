@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import uk.ac.ebi.pride.data.model.MetaData;
+import uk.ac.ebi.pride.data.model.ProjectMetaData;
 import uk.ac.ebi.pride.data.model.Submission;
 
 import java.io.File;
@@ -33,19 +33,19 @@ public class SubmissionFileWriterSupportedMetaDataTest {
 
     @Test
     public void tabShouldbeReplacedWithSpace() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        metaData.setDescription("An experiment about\t\thuman proteome");
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        projectMetaData.setProjectDescription("An experiment about\t\thuman proteome");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals("An experiment about  human proteome", newSubmission.getMetaData().getDescription());
+        assertEquals("An experiment about  human proteome", newSubmission.getProjectMetaData().getProjectDescription());
     }
 
     @Test
     public void lineSeparatorShouldbeReplacedByComma() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        metaData.setDescription("An experiment about\n\nhuman proteome");
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        projectMetaData.setProjectDescription("An experiment about\n\nhuman proteome");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals("An experiment about  human proteome", newSubmission.getMetaData().getDescription());
+        assertEquals("An experiment about  human proteome", newSubmission.getProjectMetaData().getProjectDescription());
     }
 }

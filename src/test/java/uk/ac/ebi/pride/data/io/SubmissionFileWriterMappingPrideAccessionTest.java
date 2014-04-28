@@ -39,7 +39,7 @@ public class SubmissionFileWriterMappingPrideAccessionTest {
         List<DataFile> dataFiles = newSubmission.getDataFiles();
         int accessionCnt = 0;
         for (DataFile dataFile : dataFiles) {
-            if (dataFile.getPrideAccession() != null && !dataFile.getPrideAccession().trim().equals("")) {
+            if (dataFile.getAssayAccession() != null && !dataFile.getAssayAccession().trim().equals("")) {
                 accessionCnt++;
             }
         }
@@ -51,7 +51,7 @@ public class SubmissionFileWriterMappingPrideAccessionTest {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
         List<DataFile> dataFiles = newSubmission.getDataFiles();
-        assertEquals("12345", dataFiles.get(0).getPrideAccession());
-        assertEquals("23456", dataFiles.get(1).getPrideAccession());
+        assertEquals("12345", dataFiles.get(0).getAssayAccession());
+        assertEquals("23456", dataFiles.get(1).getAssayAccession());
     }
 }

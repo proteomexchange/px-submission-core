@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.exception.SubmissionFileException;
 import uk.ac.ebi.pride.data.model.*;
 import uk.ac.ebi.pride.data.util.Constant;
-import uk.ac.ebi.pride.data.util.SubmissionType;
+import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,7 +19,8 @@ import java.util.List;
  * @author Rui Wang
  * @version $Id$
  */
-public class SubmissionFileWriter {
+public final class SubmissionFileWriter {
+
     private static final Logger logger = LoggerFactory.getLogger(SubmissionFileWriter.class);
 
     private SubmissionFileWriter() {
@@ -29,8 +31,7 @@ public class SubmissionFileWriter {
      *
      * @param submission submission object
      * @param file       output file
-     * @throws uk.ac.ebi.pride.data.exception.SubmissionFileException
-     *          exception while writing a submission output file
+     * @throws uk.ac.ebi.pride.data.exception.SubmissionFileException exception while writing a submission output file
      */
     public static void write(Submission submission, File file) throws SubmissionFileException {
         PrintWriter writer = null;
@@ -38,15 +39,20 @@ public class SubmissionFileWriter {
             // create writer
             writer = new PrintWriter(file, "UTF-8");
 
-            // write contact
-            writeContact(writer, submission.getContact());
-
-            // write meta data
-            writeMetaData(writer, submission.getMetaData());
+            // write general project meta data
+            ProjectMetaData projectMetaData = submission.getProjectMetaData();
+            writeGeneralProjectMetaData(writer, projectMetaData);
+            writeSampleProjectMetaData(writer, projectMetaData);
             writer.println();
 
             // write file mappings
             writeFileMappings(writer, submission.getDataFiles());
+            writer.println();
+
+            // write sample metadata
+            if (!submission.getProjectMetaData().isPartialSubmission()) {
+                writeSampleMetaData(writer, submission.getDataFiles());
+            }
             writer.flush();
 
         } catch (IOException e) {
@@ -60,78 +66,195 @@ public class SubmissionFileWriter {
         }
     }
 
-
     /**
-     * Write contact info to output
+     * Write general project level metadata to output
      */
-    private static void writeContact(PrintWriter writer, Contact contact) {
-        writeMetaData(writer, Constant.NAME, contact.getName());
-        writeMetaData(writer, Constant.EMAIL, contact.getEmail());
-        writeMetaData(writer, Constant.AFFILIATION, contact.getAffiliation());
-        writeMetaData(writer, Constant.PRIDE_LOGIN, contact.getUserName());
-    }
+    private static void writeGeneralProjectMetaData(PrintWriter writer, ProjectMetaData projectMetaData) {
+        // submitter
+        writeProjectMetaData(writer, Constant.SUBMITTER_NAME, projectMetaData.getSubmitterContact().getName());
+        writeProjectMetaData(writer, Constant.SUBMITTER_EMAIL, projectMetaData.getSubmitterContact().getEmail());
+        writeProjectMetaData(writer, Constant.SUBMITTER_AFFILIATION, projectMetaData.getSubmitterContact().getAffiliation());
+        writeProjectMetaData(writer, Constant.SUBMITTER_USER_NAME, projectMetaData.getSubmitterContact().getUserName());
 
-    /**
-     * Write metadata info to output
-     */
-    private static void writeMetaData(PrintWriter writer, MetaData metaData) {
-        // title
-        writeMetaData(writer, Constant.EXPERIMENT_TITLE, metaData.getTitle());
-        // description
-        writeMetaData(writer, Constant.EXPERIMENT_DESC, metaData.getDescription());
-        // keywords
-        writeMetaData(writer, Constant.KEYWORDS, metaData.getKeywords());
-        // supported or unsupported
-        writeMetaData(writer, Constant.SUBMISSION_TYPE, metaData.getSubmissionType().toString());
-
-        if (!SubmissionType.SUPPORTED.equals(metaData.getSubmissionType())) {
-            // comment
-            writeMetaData(writer, Constant.COMMENT, metaData.getComment());
-            // species
-            writeMetaData(writer, Constant.SPECIES, metaData.getSpecies(), false);
-            // instrument
-            List<List<CvParam>> instruments = metaData.getInstruments();
-            for (List<CvParam> instrument : instruments) {
-                writeMetaData(writer, Constant.INSTRUMENT, instrument, true);
-            }
-            // modification
-            writeMetaData(writer, Constant.MODIFICATION, metaData.getModifications(), false);
-
-            // additional
-            if (metaData.hasAdditional()) {
-                writeMetaData(writer, Constant.ADDITIONAL, metaData.getAdditional(), false);
-            }
+        // lab head
+        Contact labHeadContact = projectMetaData.getLabHeadContact();
+        if (labHeadContact != null) {
+            writeProjectMetaData(writer, Constant.LAB_HEAD_NAME, labHeadContact.getName());
+            writeProjectMetaData(writer, Constant.LAB_HEAD_EMAIL, labHeadContact.getEmail());
+            writeProjectMetaData(writer, Constant.LAB_HEAD_AFFILIATION, labHeadContact.getAffiliation());
         }
 
+        // title
+        writeProjectMetaData(writer, Constant.PROJECT_TITLE, projectMetaData.getProjectTitle());
+
+        // project description
+        writeProjectMetaData(writer, Constant.PROJECT_DESC, projectMetaData.getProjectDescription());
+
+        // project tag
+        writeProjectMetaData(writer, Constant.PROJECT_TAG, projectMetaData.getProjectTags(), false);
+
+        // keywords
+        writeProjectMetaData(writer, Constant.KEYWORDS, projectMetaData.getKeywords());
+
+        // sample processing protocol
+        writeProjectMetaData(writer, Constant.SAMPLE_PROCESSING_PROTOCOL, projectMetaData.getSampleProcessingProtocol());
+
+        // data processing protocol
+        writeProjectMetaData(writer, Constant.DATA_PROCESSING_PROTOCOL, projectMetaData.getDataProcessingProtocol());
+
+        // other omics link
+        if (projectMetaData.hasOtherOmicsLink()) {
+            writeProjectMetaData(writer, Constant.OTHER_OMICS_LINK, projectMetaData.getOtherOmicsLink());
+        }
+
+        // experiment type
+        writeProjectMetaData(writer, Constant.EXPERIMENT_TYPE, projectMetaData.getMassSpecExperimentMethods(), false);
+
+        // complete or partial
+        writeProjectMetaData(writer, Constant.SUBMISSION_TYPE, projectMetaData.getSubmissionType().toString());
+
         // pubmed ids
-        if (metaData.hasPubmedIds()) {
-            writeMetaData(writer, Constant.PUBMED_ID, metaData.getPubmedIds(), false);
+        if (projectMetaData.hasPubmedIds()) {
+            writeProjectMetaData(writer, Constant.PUBMED_ID, projectMetaData.getPubmedIds(), false);
         }
 
         // resubmission
-        if (metaData.isResubmission()) {
-            writeMetaData(writer, Constant.RESUBMISSION_PX_ACCESSION, metaData.getResubmissionPxAccession());
+        if (projectMetaData.isResubmission()) {
+            writeProjectMetaData(writer, Constant.RESUBMISSION_PX_ACCESSION, projectMetaData.getResubmissionPxAccession());
         }
 
         // reanalysis
-        if (metaData.hasReanalysisPxAccessions()) {
-            writeMetaData(writer, Constant.REANALYSIS_PX_ACCESSION, metaData.getReanalysisAccessions(), false);
+        if (projectMetaData.hasReanalysisPxAccessions()) {
+            writeProjectMetaData(writer, Constant.REANALYSIS_PX_ACCESSION, projectMetaData.getReanalysisAccessions(), false);
         }
+
+        // additional
+        if (projectMetaData.hasAdditional()) {
+            writeProjectMetaData(writer, Constant.ADDITIONAL, projectMetaData.getAdditional(), false);
+        }
+    }
+
+
+    /**
+     * Write project level metadata for partial submission
+     */
+    private static void writeSampleProjectMetaData(PrintWriter writer, ProjectMetaData projectMetaData) {
+        // reason for partial submission
+        writeProjectMetaData(writer, Constant.REASON_FOR_PARTIAL, projectMetaData.getReasonForPartialSubmission());
+
+        // species
+        writeProjectMetaData(writer, Constant.SPECIES, projectMetaData.getSpecies(), false);
+
+        // tissue
+        writeProjectMetaData(writer, Constant.TISSUE, projectMetaData.getTissues(), false);
+
+        // cell type
+        writeProjectMetaData(writer, Constant.CELL_TYPE, projectMetaData.getCellTypes(), false);
+
+        // disease
+        writeProjectMetaData(writer, Constant.DISEASE, projectMetaData.getDiseases(), false);
+
+        // instrument
+        writeProjectMetaData(writer, Constant.INSTRUMENT, projectMetaData.getInstruments(), false);
+
+        // modification
+        writeProjectMetaData(writer, Constant.MODIFICATION, projectMetaData.getModifications(), false);
+
+        // quantification
+        writeProjectMetaData(writer, Constant.QUANTIFICATION, projectMetaData.getQuantifications(), false);
     }
 
     /**
      * Write file mappings to output
      */
-    private static void writeFileMappings(PrintWriter writer, List<DataFile> dataFiles) {
+    private static void writeFileMappings(PrintWriter writer, List<DataFile> dataFiles) throws IOException {
         writeFileMappingHeader(writer, hasPrideAccession(dataFiles));
         for (DataFile dataFile : dataFiles) {
             writeFileMapping(writer, dataFile);
         }
     }
 
+    /**
+     * Write sample metadata
+     */
+    private static void writeSampleMetaData(PrintWriter writer, List<DataFile> dataFiles) {
+        writeSampleMetaDataHeader(writer);
+        for (DataFile dataFile : dataFiles) {
+            if (ProjectFileType.RESULT.equals(dataFile.getFileType())) {
+                writeSampleMetaDataEntry(writer, dataFile.getFileId(), dataFile.getSampleMetaData());
+            }
+        }
+    }
+
+    /**
+     * Write sample metadata header
+     */
+    private static void writeSampleMetaDataHeader(PrintWriter writer) {
+        writer.println(castToString(Constant.TAB, Constant.SAMPLE_METADATA_HEADER, Constant.FILE_ID,
+                Constant.SPECIES, Constant.TISSUE,
+                Constant.CELL_TYPE, Constant.DISEASE, Constant.MODIFICATION,
+                Constant.INSTRUMENT, Constant.QUANTIFICATION,
+                Constant.EXPERIMENTAL_FACTOR));
+    }
+
+    /**
+     * Write a single sample metadata entry
+     */
+    private static void writeSampleMetaDataEntry(PrintWriter writer, int fileId, SampleMetaData metaData) {
+        // species
+        String species = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.SPECIES)) {
+            species = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.SPECIES).toArray());
+        }
+
+        // tissue
+        String tissues = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.TISSUE)) {
+            tissues = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.TISSUE).toArray());
+        }
+
+        // cell type
+        String cellTypes = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.CELL_TYPE)) {
+            cellTypes = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.CELL_TYPE).toArray());
+        }
+
+        // disease
+        String diseases = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.DISEASE)) {
+            diseases = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.DISEASE).toArray());
+        }
+
+        // modification
+        String modification = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.MODIFICATION)) {
+            modification = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.MODIFICATION).toArray());
+        }
+
+        // instrument
+        String instruments = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.INSTRUMENT)) {
+            instruments = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.INSTRUMENT).toArray());
+        }
+
+        // quantification
+        String quantifications = "";
+        if (metaData.hasMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD)) {
+            quantifications = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD).toArray());
+        }
+
+        String experimentalFactor = metaData.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR).iterator().next().getValue();
+
+        writer.println(castToString(Constant.TAB, Constant.SAMPLE_METADATA_ENTRY,
+                fileId, species,
+                tissues, cellTypes, diseases, modification,
+                instruments, quantifications,
+                experimentalFactor));
+    }
+
     private static boolean hasPrideAccession(List<DataFile> dataFiles) {
         for (DataFile dataFile : dataFiles) {
-            if (dataFile.getPrideAccession() != null) {
+            if (dataFile.getAssayAccession() != null) {
                 return true;
             }
         }
@@ -145,30 +268,13 @@ public class SubmissionFileWriter {
      * @param type   metadata type
      * @param value  metadata string value
      */
-    private static void writeMetaData(PrintWriter writer, String type, String value) {
-        writer.println(Constant.METADATA_HEADER + Constant.TAB + type + Constant.TAB + cleanString(value));
-    }
-
-    /**
-     * Write an entry from MetaData
-     *
-     * @param writer print writer
-     * @param type   metadata type
-     * @param value  metadata boolean value
-     */
-    private static void writeMetaData(PrintWriter writer, String type, boolean value) {
-        writer.println(Constant.METADATA_HEADER + Constant.TAB + type + Constant.TAB + value);
-    }
-
-    /**
-     * Write an entry from MetaData
-     *
-     * @param writer print writer
-     * @param type   metadata type
-     * @param value  metadata controlled vocabulary value
-     */
-    private static void writeMetaData(PrintWriter writer, String type, CvParam value) {
-        writer.println(Constant.METADATA_HEADER + Constant.TAB + type + Constant.TAB + value.toString());
+    private static void writeProjectMetaData(PrintWriter writer, String type, Object value) {
+        if (value != null) {
+            String cleanedValue = cleanString(value.toString());
+            if (cleanedValue.trim().length() != 0) {
+                writer.println(castToString(Constant.TAB, Constant.METADATA_HEADER, type, cleanedValue));
+            }
+        }
     }
 
     /**
@@ -178,17 +284,17 @@ public class SubmissionFileWriter {
      * @param type   metadata type
      * @param values a list of metadata values
      */
-    private static void writeMetaData(PrintWriter writer, String type, List values, boolean combine) {
+    private static void writeProjectMetaData(PrintWriter writer, String type, Collection values, boolean combine) {
         if (combine) {
-            String combined = "";
-            for (Object value : values) {
-                combined += (value instanceof CvParam ? cvParamToString((CvParam) value) : value.toString()) + Constant.COMMA;
+            String combinedValues = castToString(Constant.COMMA, values);
+            if (combinedValues.trim().length() != 0) {
+                writer.println(castToString(Constant.TAB, Constant.METADATA_HEADER, type, cleanString(combinedValues)));
             }
-            combined = combined.substring(0, combined.length() - 1);
-            writer.println(Constant.METADATA_HEADER + Constant.TAB + type + Constant.TAB + cleanString(combined));
         } else {
-            for (Object value : values) {
-                writer.println(Constant.METADATA_HEADER + Constant.TAB + type + Constant.TAB + (value instanceof CvParam ? cvParamToString((CvParam) value) : value.toString()));
+            if (!values.isEmpty()) {
+                for (Object value : values) {
+                    writer.println(castToString(Constant.TAB, Constant.METADATA_HEADER, type, value.toString()));
+                }
             }
         }
     }
@@ -199,9 +305,9 @@ public class SubmissionFileWriter {
      * @param writer print writer
      */
     private static void writeFileMappingHeader(PrintWriter writer, boolean hasPrideAccession) {
-        writer.println(Constant.FILE_MAPPING_HEADER + Constant.TAB + Constant.FILE_ID
-                + Constant.TAB + Constant.FILE_TYPE + Constant.TAB + Constant.FILE_PATH
-                + Constant.TAB + Constant.FILE_MAPPING + (hasPrideAccession ? (Constant.TAB + Constant.PRIDE_ACCESSION) : ""));
+        writer.println(castToString(Constant.TAB, Constant.FILE_MAPPING_HEADER, Constant.FILE_ID,
+                Constant.FILE_TYPE, Constant.FILE_PATH, Constant.FILE_MAPPING,
+                (hasPrideAccession ? Constant.PRIDE_ACCESSION : "")));
     }
 
     /**
@@ -210,7 +316,7 @@ public class SubmissionFileWriter {
      * @param writer   print writer
      * @param dataFile data file mapping entry
      */
-    private static void writeFileMapping(PrintWriter writer, DataFile dataFile) {
+    private static void writeFileMapping(PrintWriter writer, DataFile dataFile) throws IOException {
         // convert file type
         String type = null;
         switch (dataFile.getFileType()) {
@@ -226,6 +332,12 @@ public class SubmissionFileWriter {
             case PEAK:
                 type = Constant.PEAK_LIST_FILE_TYPE;
                 break;
+            case QUANTIFICATION:
+                type = Constant.QUANT_FILE_TYPE;
+                break;
+            case GEL:
+                type = Constant.GEL_FILE_TYPE;
+                break;
             case OTHER:
                 type = Constant.OTHER_FILE_TYPE;
                 break;
@@ -234,7 +346,7 @@ public class SubmissionFileWriter {
         // convert file path
         String path = null;
         if (dataFile.isFile()) {
-            path = dataFile.getFile().getAbsolutePath();
+            path = dataFile.getFile().getCanonicalPath();
         } else if (dataFile.isUrl()) {
             path = dataFile.getUrl().toString();
         }
@@ -243,31 +355,21 @@ public class SubmissionFileWriter {
         String mappings = "";
         if (dataFile.hasMappings()) {
             for (DataFile file : dataFile.getFileMappings()) {
-                mappings += file.getId() + Constant.COMMA;
+                mappings += file.getFileId() + Constant.COMMA;
             }
             mappings = mappings.substring(0, mappings.length() - 1);
         }
 
         // pride accession
         String prideAccession = "";
-        if (dataFile.getPrideAccession() != null) {
-            prideAccession = dataFile.getPrideAccession();
+        if (dataFile.getAssayAccession() != null) {
+            prideAccession = dataFile.getAssayAccession();
         }
 
-        writer.println(Constant.FILE_MAPPING_ENTRY + Constant.TAB + dataFile.getId()
-                + Constant.TAB + type + Constant.TAB + path + Constant.TAB + mappings + Constant.TAB + prideAccession);
+        writer.println(castToString(Constant.TAB, Constant.FILE_MAPPING_ENTRY, dataFile.getFileId(),
+                type, path, mappings, prideAccession));
     }
 
-
-    /**
-     * convert cv param to string for output
-     */
-    private static String cvParamToString(CvParam cvParam) {
-        return Constant.CV_START + cvParam.getCvLabel() +
-                Constant.COMMA + cvParam.getAccession() +
-                Constant.COMMA + cvParam.getName() +
-                Constant.COMMA + (cvParam.getValue() == null ? "" : cvParam.getValue()) + Constant.CV_END;
-    }
 
     /**
      * Clean input string for output
@@ -289,5 +391,29 @@ public class SubmissionFileWriter {
         result = result.replace(Constant.LINE_SEPARATOR, " ");
 
         return result;
+    }
+
+
+    /**
+     * Cast a set of objects into a combined string with a given separator
+     *
+     * @param separator string separator
+     * @param values    a set of objects
+     * @return combined string
+     */
+    private static String castToString(String separator, Object... values) {
+        StringBuilder builder = new StringBuilder();
+
+        for (Object value : values) {
+            builder.append(value.toString());
+            builder.append(separator);
+        }
+
+        // remove the last the separator
+        String str = builder.toString();
+        if (values.length > 0) {
+            str = str.substring(0, str.length() - separator.length());
+        }
+        return str;
     }
 }

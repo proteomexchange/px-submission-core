@@ -1,7 +1,11 @@
 package uk.ac.ebi.pride.data.model;
 
+import uk.ac.ebi.pride.data.util.MassSpecFileFormat;
+import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,89 +18,130 @@ import java.util.List;
  */
 public class Submission implements Serializable {
     /**
-     * Submitter contact details
-     */
-    private Contact contact;
-    /**
      * Experiment meta data
      */
-    private MetaData metaData;
+    private ProjectMetaData projectMetaData;
     /**
      * A list of dataFiles to be submitted
      */
-    private List<DataFile> dataFiles;
+    private final List<DataFile> dataFiles;
 
     public Submission() {
-        this.contact = new Contact();
-        this.metaData = new MetaData();
+        this.projectMetaData = new ProjectMetaData();
         this.dataFiles = Collections.synchronizedList(new ArrayList<DataFile>());
     }
 
-    public Submission(Contact contact,
-                      MetaData metaData,
+    public Submission(ProjectMetaData projectMetaData,
                       List<DataFile> dataFiles) {
-        this.contact = contact;
-        this.metaData = metaData;
+        this.projectMetaData = projectMetaData;
         this.dataFiles = dataFiles;
     }
 
-    public Contact getContact() {
-        return contact;
+    public ProjectMetaData getProjectMetaData() {
+        return projectMetaData;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
+    public void setProjectMetaData(ProjectMetaData projectMetaData) {
+        this.projectMetaData = projectMetaData;
     }
 
-    public MetaData getMetaData() {
-        return metaData;
+    public synchronized List<DataFile> getDataFiles() {
+        return new ArrayList<DataFile>(dataFiles);
     }
 
-    public void setMetaData(MetaData metaData) {
-        this.metaData = metaData;
+    public synchronized boolean containsDataFile(DataFile dataFile) {
+        return dataFiles.contains(dataFile);
     }
 
-    public List<DataFile> getDataFiles() {
-        return dataFiles;
+    public synchronized void removeAllDataFiles() {
+        dataFiles.clear();
     }
 
-    public void removeAllDataFiles() {
-        if (this.dataFiles != null) {
-            dataFiles.clear();
+    public synchronized void addDataFile(DataFile dataFile) {
+        dataFiles.add(dataFile);
+    }
+
+    public synchronized void addDataFiles(Collection<DataFile> newDataFiles) {
+        dataFiles.addAll(newDataFiles);
+    }
+
+    public synchronized void removeDataFile(DataFile dataFile) {
+        if (dataFile != null) {
+            dataFiles.remove(dataFile);
         }
     }
 
-    public void setDataFiles(List<DataFile> dataFiles) {
-        this.dataFiles = dataFiles;
+    public synchronized DataFile getDataFileById(int fileId) {
+        for (DataFile file : dataFiles) {
+            if (file.getFileId() == fileId) {
+                return file;
+            }
+        }
+
+        return null;
+    }
+
+    public synchronized List<DataFile> getDataFileByType(ProjectFileType fileType) {
+        List<DataFile> typedDataFiles = new ArrayList<DataFile>();
+
+        for (DataFile dataFile : dataFiles) {
+            if (dataFile.getFileType().equals(fileType)) {
+                typedDataFiles.add(dataFile);
+            }
+        }
+
+        return typedDataFiles;
+    }
+
+    public synchronized List<DataFile> getDataFilesByFormat(MassSpecFileFormat format) {
+        List<DataFile> formattedDataFiles = new ArrayList<DataFile>();
+
+        for (DataFile dataFile : dataFiles) {
+            if (format.equals(dataFile.getFileFormat())) {
+                formattedDataFiles.add(dataFile);
+            }
+        }
+
+        return formattedDataFiles;
+    }
+
+    public synchronized int countDataFilesByType(ProjectFileType fileType) {
+        int cnt = 0;
+
+        for (DataFile dataFile : dataFiles) {
+            if (dataFile.getFileType().equals(fileType)) {
+                cnt++;
+            }
+        }
+
+        return cnt;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Submission)) return false;
 
         Submission that = (Submission) o;
 
-        if (contact != null ? !contact.equals(that.contact) : that.contact != null) return false;
-        if (dataFiles != null ? !dataFiles.equals(that.dataFiles) : that.dataFiles != null) return false;
-        if (metaData != null ? !metaData.equals(that.metaData) : that.metaData != null) return false;
+        if (!dataFiles.equals(that.dataFiles)) return false;
+        if (projectMetaData != null ? !projectMetaData.equals(that.projectMetaData) : that.projectMetaData != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = contact != null ? contact.hashCode() : 0;
-        result = 31 * result + (metaData != null ? metaData.hashCode() : 0);
-        result = 31 * result + (dataFiles != null ? dataFiles.hashCode() : 0);
+        int result = projectMetaData != null ? projectMetaData.hashCode() : 0;
+        result = 31 * result + dataFiles.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "Submission{" +
-                "contact=" + contact +
-                ", metaData=" + metaData +
+                "projectMetaData=" + projectMetaData +
                 ", dataFiles=" + dataFiles +
                 '}';
     }

@@ -33,7 +33,7 @@ public class SubmissionFileParserMappingPrideAccessionTest {
         List<DataFile> dataFiles = submission.getDataFiles();
         int accessionCnt = 0;
         for (DataFile dataFile : dataFiles) {
-            if (dataFile.getPrideAccession() != null) {
+            if (dataFile.getAssayAccession() != null) {
                 accessionCnt++;
             }
         }
@@ -43,7 +43,7 @@ public class SubmissionFileParserMappingPrideAccessionTest {
     @Test
     public void prideAccessionCorrect() throws Exception {
         List<DataFile> dataFiles = submission.getDataFiles();
-        assertEquals("12345", dataFiles.get(0).getPrideAccession());
-        assertEquals("23456", dataFiles.get(1).getPrideAccession());
+        assertEquals("12345", dataFiles.get(0).getAssayAccession());
+        assertEquals("23456", dataFiles.get(1).getAssayAccession());
     }
 }

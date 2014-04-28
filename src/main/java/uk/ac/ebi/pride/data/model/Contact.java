@@ -24,7 +24,7 @@ public class Contact implements Serializable {
     private String affiliation;
 
     /**
-     * pride user name, required
+     * pride username, required
      */
     private String userName;
 
@@ -111,16 +111,5 @@ public class Contact implements Serializable {
         result = 31 * result + (userName != null ? userName.hashCode() : 0);
         result = 31 * result + (password != null ? Arrays.hashCode(password) : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Contact{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", affiliation='" + affiliation + '\'' +
-                ", userName='" + userName + '\'' +
-                ", password=" + password +
-                '}';
     }
 }

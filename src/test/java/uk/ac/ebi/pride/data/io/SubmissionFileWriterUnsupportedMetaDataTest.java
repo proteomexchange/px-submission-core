@@ -4,14 +4,17 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import uk.ac.ebi.pride.data.model.MetaData;
+import uk.ac.ebi.pride.data.model.CvParam;
+import uk.ac.ebi.pride.data.model.ProjectMetaData;
 import uk.ac.ebi.pride.data.model.Submission;
-import uk.ac.ebi.pride.data.util.SubmissionType;
+import uk.ac.ebi.pride.prider.dataprovider.project.SubmissionType;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test submission file writer with unsupported result files
@@ -36,27 +39,27 @@ public class SubmissionFileWriterUnsupportedMetaDataTest {
 
     @Test
     public void tabShouldbeReplacedWithSpace() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        metaData.setDescription("An experiment about\t\thuman proteome");
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        projectMetaData.setProjectDescription("An experiment about\t\thuman proteome");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals("An experiment about  human proteome", newSubmission.getMetaData().getDescription());
+        assertEquals("An experiment about  human proteome", newSubmission.getProjectMetaData().getProjectDescription());
     }
 
     @Test
     public void lineSeparatorShouldbeReplacedByComma() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        metaData.setDescription("An experiment about\n\nhuman proteome");
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        projectMetaData.setProjectDescription("An experiment about\n\nhuman proteome");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals("An experiment about  human proteome", newSubmission.getMetaData().getDescription());
+        assertEquals("An experiment about  human proteome", newSubmission.getProjectMetaData().getProjectDescription());
     }
 
     @Test
     public void supportedIsFalse() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(SubmissionType.UNSUPPORTED, newSubmission.getMetaData().getSubmissionType());
+        assertEquals(SubmissionType.PARTIAL, newSubmission.getProjectMetaData().getSubmissionType());
     }
 
 
@@ -64,39 +67,43 @@ public class SubmissionFileWriterUnsupportedMetaDataTest {
     public void commentIsCorrect() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals("cannot convert using the PRIDE Converter", newSubmission.getMetaData().getComment());
+        assertEquals("cannot convert using the PRIDE Converter", newSubmission.getProjectMetaData().getReasonForPartialSubmission());
     }
 
     @Test
     public void testSpeciesAreCorrect() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(2, newSubmission.getMetaData().getSpecies().size());
-        assertEquals("741158", newSubmission.getMetaData().getSpecies().get(1).getAccession());
+        assertEquals(2, newSubmission.getProjectMetaData().getSpecies().size());
+        Set<CvParam> species = submission.getProjectMetaData().getSpecies();
+        boolean hasHuman = CollectionTestUtils.findCvParamAccession(species, "9606");
+        assertTrue(hasHuman);
     }
 
     @Test
     public void testInstrumentIsCorrect() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(1, newSubmission.getMetaData().getInstruments().size());
-        assertEquals(2, newSubmission.getMetaData().getInstruments().get(0).size());
-        assertEquals("MS:1000122", newSubmission.getMetaData().getInstruments().get(0).get(1).getAccession());
+        assertEquals(1, newSubmission.getProjectMetaData().getInstruments().size());
+        Set<CvParam> instruments = submission.getProjectMetaData().getInstruments();
+        boolean hasInstrument = CollectionTestUtils.findCvParamAccession(instruments, "MS:1000447");
+        assertTrue(hasInstrument);
     }
 
     @Test
     public void testModificationIsCorrect() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(2, newSubmission.getMetaData().getModifications().size());
-        assertEquals("MOD:00199", newSubmission.getMetaData().getModifications().get(1).getAccession());
+        assertEquals(2, newSubmission.getProjectMetaData().getModifications().size());
+        assertEquals("MOD:00198", newSubmission.getProjectMetaData().getModifications().iterator().next().getAccession());
     }
 
     @Test
     public void testAdditionalIsCorrect() throws Exception {
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(1, newSubmission.getMetaData().getAdditional().size());
-        assertEquals("PRIDE:0000097", newSubmission.getMetaData().getAdditional().get(0).getAccession());
+        assertEquals(1, newSubmission.getProjectMetaData().getAdditional().size());
+        boolean hasAdditionalParamValue = CollectionTestUtils.findParamValue(submission.getProjectMetaData().getAdditional(), "additional param value");
+        assertTrue(hasAdditionalParamValue);
     }
 }

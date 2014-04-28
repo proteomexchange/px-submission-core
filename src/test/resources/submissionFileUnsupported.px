@@ -1,23 +1,35 @@
-MTD	name	 John Arthur Smith
-MTD	email	john.smith@cam.edu
-MTD	affiliation	University of Cambridge
-MTD	title	Human proteome
-MTD	description	An experiment about human proteome
+MTD	submitter_name	 John Arthur Smith
+MTD	submitter_email	john.smith@cam.edu
+MTD	submitter_affiliation	University of Cambridge
+MTD	submitter_pride_login	john.smith@cam.edu
+MTD	lab_head_name	 Alice Wonderland
+MTD	lab_head_email	alice.wonderland@cam.edu
+MTD	lab_head_affiliation	University of Newcastle
+MTD	project_title	Human proteome
+MTD	project_description	An experiment about human proteome An experiment about human proteome An experiment about human proteome
+MTD	project_tag	Human proteome project
+MTD	sample_processing_protocol	sample processing protocol sample processing protocol sample processing protocol sample processing protocol
+MTD	data_processing_protocol	 data processing protocol data processing protocol data processing protocol data processing protocol
+MTD	other_omics_link	http://www.ebi.ac.uk
 MTD	keywords	human, proteome
-MTD	type	unsupported
-MTD	comment	cannot convert using the PRIDE Converter
+MTD	experiment_type	[PRIDE, PRIDE:1000448, MS1,]
+MTD	submission_type	partial
+MTD	reason_for_partial	cannot convert using the PRIDE Converter
 MTD	species	[NEWT,9606,Human,]
 MTD	species	[NEWT,741158,Homo sp. Altai,]
-MTD	instrument	[PSI-MS,MS:1000121,AB SCIEX instrument model,],[PSI-MS,MS:1000122,AB SCIEX instrument test model,]
+MTD	tissue	[BTO,BTO:0000142,brain,]
+MTD	cell_type	[CL,CL:0000236,B cell,]
+MTD	disease	[DOID, DOID:1319, brain cancer,]
+MTD	instrument	[MS,MS:1000447,LTQ,]
 MTD	modification	[MOD, MOD:00198, D-alanine,]
 MTD	modification	[MOD, MOD:00199, D-alanine-1,]
-MTD	additional	[PRIDE, PRIDE:0000097, Project, Test submission]
-MTD	pubmed	12345
-MTD	pubmed	23456
-MTD	resubmission_px	PXD000001
+MTD	quantification	[PRIDE, PRIDE:00199, label free,]
+MTD	pubmed_id	12345
+MTD	pubmed_id	23456
 MTD	reanalysis_px	PXD000004
 MTD	reanalysis_px	PXD000005
-MTD	pride_login	pride_user
+MTD	resubmission_px	PXD000001
+MTD	additional	[,,Additional param name,additional param value]
 
 FMH	file_id	file_type	file_path 	file_mapping
 FME	1	search	/path/to/result/files/result-1.xml	7,8,9

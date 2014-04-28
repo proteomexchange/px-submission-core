@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import uk.ac.ebi.pride.data.model.MetaData;
+import uk.ac.ebi.pride.data.model.ProjectMetaData;
 import uk.ac.ebi.pride.data.model.Submission;
 
 import java.io.File;
@@ -34,23 +34,23 @@ public class LineSeparatorRemovalTest {
 
     @Test
     public void shouldRemoveWindowsLineSeparator() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        String desc = metaData.getDescription();
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        String desc = projectMetaData.getProjectDescription();
         String newDesc = desc + " test test";
-        metaData.setDescription(desc + "\r\ntest test");
+        projectMetaData.setProjectDescription(desc + "\r\ntest test");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(newDesc, newSubmission.getMetaData().getDescription());
+        assertEquals(newDesc, newSubmission.getProjectMetaData().getProjectDescription());
     }
 
     @Test
     public void shouldRemoveLinuxLineSeparator() throws Exception {
-        MetaData metaData = submission.getMetaData();
-        String desc = metaData.getDescription();
+        ProjectMetaData projectMetaData = submission.getProjectMetaData();
+        String desc = projectMetaData.getProjectDescription();
         String newDesc = desc + " test test";
-        metaData.setDescription(desc + "\ntest test");
+        projectMetaData.setProjectDescription(desc + "\ntest test");
         SubmissionFileWriter.write(submission, newSubmissionFile);
         Submission newSubmission = SubmissionFileParser.parse(newSubmissionFile);
-        assertEquals(newDesc, newSubmission.getMetaData().getDescription());
+        assertEquals(newDesc, newSubmission.getProjectMetaData().getProjectDescription());
     }
 }
