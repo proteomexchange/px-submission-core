@@ -1,0 +1,51 @@
+MTD	submitter_name	 John Arthur Smith
+MTD	submitter_email	john.smith@cam.edu
+MTD	submitter_affiliation	University of Cambridge
+MTD	submitter_pride_login	john.smith@cam.edu
+MTD	lab_head_name	 Alice Wonderland
+MTD	lab_head_email	alice.wonderland@cam.edu
+MTD	lab_head_affiliation	University of Newcastle
+MTD	project_title	Human proteome
+MTD	project_description	An experiment about human proteome
+MTD	project_tag	Human proteome project
+MTD	sample_processing_protocol	sample processing protocol
+MTD	data_processing_protocol	data processing protocol
+MTD	other_omics_link	http://www.ebi.ac.uk
+MTD	keywords	human, proteome
+MTD	experiment_type	[PRIDE, PRIDE:1000448, MS1,]
+MTD	submission_type	complete
+MTD	species	[NEWT,9606,Human,]
+MTD	species	[NEWT,741158,Homo sp. Altai,]
+MTD	tissue	[BTO,BTO:0000142,brain,]
+MTD	cell_type	[CL,CL:0000236,B cell,]
+MTD	disease	[DOID, DOID:1319, brain cancer,]
+MTD	instrument	[MS,MS:1000447,LTQ,]
+MTD	quantification	[PRIDE, PRIDE:00199, label free,]
+MTD	pubmed_id	12345
+MTD	pubmed_id	23456
+MTD	reanalysis_px	PXD000004
+MTD	reanalysis_px	PXD000005
+MTD	resubmission_px	PXD000006
+MTD	additional	[,,Additional param name,additional param value]
+
+FMH	file_id	file_type	file_path	file_mapping
+FME	0	result	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\HSAs.msf-pride.xml	20,21,22	
+FME	1	result	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\HSBs.msf-pride.xml	23,24,25	
+FME	2	result	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\HSCs.msf-pride.xml	26,27,28	
+FME	3	result	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\HSDs.msf-pride.xml	29,30,31	
+FME	4	result	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\HSEs.msf-pride.xml	32,33,34	
+FME	20	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSA.raw		
+FME	21	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSA2.raw		
+FME	22	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSA3.raw		
+FME	23	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSB.raw		
+FME	24	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSB2.raw		
+FME	25	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSB3.raw		
+FME	26	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSC.raw		
+FME	27	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSC2.raw		
+FME	28	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSC3.raw		
+FME	29	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSD.raw		
+FME	30	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSD2.raw		
+FME	31	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSD3.raw		
+FME	32	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSE.raw		
+FME	33	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSE2.raw		
+FME	34	raw	C:\Documents and Settings\Matthew MacDonald\Desktop\For Pride Upload\Raw Files From QExactive\HSE3.raw		
