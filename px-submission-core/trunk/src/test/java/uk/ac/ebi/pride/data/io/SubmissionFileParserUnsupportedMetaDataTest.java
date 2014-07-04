@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.pride.data.model.CvParam;
 import uk.ac.ebi.pride.data.model.Submission;
-import uk.ac.ebi.pride.prider.dataprovider.project.SubmissionType;
+import uk.ac.ebi.pride.archive.dataprovider.project.SubmissionType;
 
 import java.io.File;
 import java.net.URL;
