@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.data.model;
 
 import uk.ac.ebi.pride.data.util.MassSpecFileFormat;
-import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
+import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
