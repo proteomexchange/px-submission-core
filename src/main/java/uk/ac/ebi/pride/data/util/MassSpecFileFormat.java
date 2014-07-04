@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.data.util;
 
-import uk.ac.ebi.pride.prider.dataprovider.file.ProjectFileType;
+import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
 
 import java.io.*;
 import java.net.URL;
