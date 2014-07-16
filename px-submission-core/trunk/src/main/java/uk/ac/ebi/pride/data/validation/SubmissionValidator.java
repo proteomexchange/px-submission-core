@@ -385,7 +385,7 @@ public final class SubmissionValidator {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Experiment methods cannot be empty"));
         } else {
             for (CvParam experimentMethod : expMethods) {
-                if (!Constant.PRIDE.equalsIgnoreCase(experimentMethod.getCvLabel())) {
+                if (!Constant.PRIDE.equalsIgnoreCase(experimentMethod.getCvLabel()) && !Constant.MS.equalsIgnoreCase(experimentMethod.getCvLabel())) {
                     report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Experiment methods must be defined using a PRIDE CV term: " + experimentMethod.getAccession()));
                 }
             }
