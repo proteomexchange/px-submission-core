@@ -112,20 +112,6 @@ public class Constant {
 
     public static final String PRIDE_ACCESSION = "pride_accession";
 
-    public static final String RESULT_FILE_TYPE = "result";
-
-    public static final String RAW_FILE_TYPE = "raw";
-
-    public static final String SEARCH_ENGINE_FILE_TYPE = "search";
-
-    public static final String PEAK_LIST_FILE_TYPE = "peak";
-
-    public static final String QUANT_FILE_TYPE = "quantification";
-
-    public static final String GEL_FILE_TYPE = "gel";
-
-    public static final String OTHER_FILE_TYPE = "other";
-
     public static final String EXPERIMENTAL_FACTOR = "experimental_factor";
 
     public static final int MINIMUM_STRING_LENGTH = 50;
