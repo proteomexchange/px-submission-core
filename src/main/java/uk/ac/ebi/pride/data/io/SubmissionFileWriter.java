@@ -318,30 +318,7 @@ public final class SubmissionFileWriter {
      */
     private static void writeFileMapping(PrintWriter writer, DataFile dataFile) throws IOException {
         // convert file type
-        String type = null;
-        switch (dataFile.getFileType()) {
-            case RESULT:
-                type = Constant.RESULT_FILE_TYPE;
-                break;
-            case RAW:
-                type = Constant.RAW_FILE_TYPE;
-                break;
-            case SEARCH:
-                type = Constant.SEARCH_ENGINE_FILE_TYPE;
-                break;
-            case PEAK:
-                type = Constant.PEAK_LIST_FILE_TYPE;
-                break;
-            case QUANTIFICATION:
-                type = Constant.QUANT_FILE_TYPE;
-                break;
-            case GEL:
-                type = Constant.GEL_FILE_TYPE;
-                break;
-            case OTHER:
-                type = Constant.OTHER_FILE_TYPE;
-                break;
-        }
+        String type = dataFile.getFileType().name();
 
         // convert file path
         String path = null;
