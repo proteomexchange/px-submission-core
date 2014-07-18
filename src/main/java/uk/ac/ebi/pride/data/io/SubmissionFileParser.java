@@ -345,22 +345,8 @@ public class SubmissionFileParser {
 
             // validate the file type
             String fileType = entry[typeIndex].trim();
-            ProjectFileType type;
-            if (Constant.RESULT_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.RESULT;
-            } else if (Constant.RAW_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.RAW;
-            } else if (Constant.SEARCH_ENGINE_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.SEARCH;
-            } else if (Constant.PEAK_LIST_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.PEAK;
-            } else if (Constant.QUANT_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.QUANTIFICATION;
-            } else if (Constant.GEL_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.GEL;
-            } else if (Constant.OTHER_FILE_TYPE.equalsIgnoreCase(fileType)) {
-                type = ProjectFileType.OTHER;
-            } else {
+            ProjectFileType type = ProjectFileType.fromString(fileType);
+            if (type == null) {
                 throw new SubmissionFileException("Invalid file type: " + fileType);
             }
 
