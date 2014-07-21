@@ -304,7 +304,7 @@ public class SubmissionFileParser {
         Map<Integer, List<Integer>> idMap = new HashMap<Integer, List<Integer>>();
 
         // get the index of all the values
-        int idIndex = -1, typeIndex = -1, pathIndex = -1, mappingIndex = -1, prideAccIndex = -1;
+        int idIndex = -1, typeIndex = -1, pathIndex = -1, mappingIndex = -1, prideAccIndex = -1, urlIndex = -1;
         for (int i = 0; i < headers.length; i++) {
             String header = headers[i].trim();
             if (Constant.FILE_ID.equalsIgnoreCase(header)) {
@@ -322,6 +322,9 @@ public class SubmissionFileParser {
             } else if (Constant.PRIDE_ACCESSION.equalsIgnoreCase(header)) {
                 // pride accession
                 prideAccIndex = i;
+            }  else if (Constant.URL.equalsIgnoreCase(header)) {
+                // url
+                urlIndex = i;
             }
         }
 
@@ -341,6 +344,12 @@ public class SubmissionFileParser {
             } catch (MalformedURLException e) {
                 path = path.replace("\\", "/");
                 file = new File(path);
+                try {
+                    if (urlIndex > -1 && urlIndex < entry.length && entry[urlIndex]!=null && !entry[urlIndex].trim().isEmpty()) {
+                        url = new URL(entry[urlIndex].trim());
+                    } } catch (MalformedURLException me) {
+                    logger.error("Malformed URL, continuing anyway: " + urlIndex);
+                }
             }
 
             // validate the file type

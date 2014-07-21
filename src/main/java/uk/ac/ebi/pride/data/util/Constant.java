@@ -114,6 +114,8 @@ public class Constant {
 
     public static final String EXPERIMENTAL_FACTOR = "experimental_factor";
 
+    public static final String URL = "url";
+
     public static final int MINIMUM_STRING_LENGTH = 50;
 
     public static final int MAXIMUM_SHORT_STRING_LENGTH = 500;

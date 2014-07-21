@@ -168,9 +168,11 @@ public final class SubmissionFileWriter {
      * Write file mappings to output
      */
     private static void writeFileMappings(PrintWriter writer, List<DataFile> dataFiles) throws IOException {
-        writeFileMappingHeader(writer, hasPrideAccession(dataFiles));
+        boolean prideAccsHeader = hasPrideAccession(dataFiles);
+        boolean urlHeader = hasURL(dataFiles);
+        writeFileMappingHeader(writer, prideAccsHeader, urlHeader);
         for (DataFile dataFile : dataFiles) {
-            writeFileMapping(writer, dataFile);
+            writeFileMapping(writer, dataFile, prideAccsHeader, urlHeader);
         }
     }
 
@@ -261,6 +263,17 @@ public final class SubmissionFileWriter {
         return false;
     }
 
+    private static boolean hasURL(List<DataFile> dataFiles) {
+        boolean result = false;
+        for (DataFile dataFile : dataFiles) {
+            if (dataFile.getUrl() != null && !dataFile.getUrl().toString().trim().isEmpty()) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
     /**
      * Write an entry from MetaData
      *
@@ -304,10 +317,18 @@ public final class SubmissionFileWriter {
      *
      * @param writer print writer
      */
-    private static void writeFileMappingHeader(PrintWriter writer, boolean hasPrideAccession) {
-        writer.println(castToString(Constant.TAB, Constant.FILE_MAPPING_HEADER, Constant.FILE_ID,
-                Constant.FILE_TYPE, Constant.FILE_PATH, Constant.FILE_MAPPING,
-                (hasPrideAccession ? Constant.PRIDE_ACCESSION : "")));
+    private static void writeFileMappingHeader(PrintWriter writer, boolean hasPrideAccession,  boolean hasURLs) {
+        StringBuilder sb = new StringBuilder(castToString(Constant.TAB, Constant.FILE_MAPPING_HEADER, Constant.FILE_ID,
+                Constant.FILE_TYPE, Constant.FILE_PATH, Constant.FILE_MAPPING));
+        if (hasPrideAccession) {
+            sb.append(Constant.PRIDE_ACCESSION);
+            sb.append('\t');
+        }
+        if (hasURLs) {
+            sb.append(Constant.URL);
+            sb.append('\t');
+        }
+        writer.println(sb.toString());
     }
 
     /**
@@ -316,16 +337,21 @@ public final class SubmissionFileWriter {
      * @param writer   print writer
      * @param dataFile data file mapping entry
      */
-    private static void writeFileMapping(PrintWriter writer, DataFile dataFile) throws IOException {
+    private static void writeFileMapping(PrintWriter writer, DataFile dataFile, boolean hasPrideAccession,  boolean hasURLs) throws IOException {
         // convert file type
         String type = dataFile.getFileType().name();
 
         // convert file path
-        String path = null;
+        String path = "";
+        String url = "";
         if (dataFile.isFile()) {
             path = dataFile.getFile().getCanonicalPath();
-        } else if (dataFile.isUrl()) {
-            path = dataFile.getUrl().toString();
+        }
+        if (dataFile.isUrl()) {
+            url = dataFile.getUrl().toString();
+            if (path.isEmpty()) {
+                path = dataFile.getUrl().getFile();
+            }
         }
 
         // convert file mappings
@@ -343,8 +369,17 @@ public final class SubmissionFileWriter {
             prideAccession = dataFile.getAssayAccession();
         }
 
-        writer.println(castToString(Constant.TAB, Constant.FILE_MAPPING_ENTRY, dataFile.getFileId(),
-                type, path, mappings, prideAccession));
+        StringBuilder sb = new StringBuilder(castToString(Constant.TAB, Constant.FILE_MAPPING_ENTRY, dataFile.getFileId(),
+                type, path, mappings));
+        if (hasPrideAccession) {
+            sb.append(prideAccession);
+            sb.append('\t');
+        }
+        if (hasURLs) {
+            sb.append(url);
+            sb.append('\t');
+        }
+        writer.println(sb.toString());
     }
 
 
