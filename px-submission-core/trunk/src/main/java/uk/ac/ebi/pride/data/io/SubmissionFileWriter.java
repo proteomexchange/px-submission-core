@@ -321,12 +321,12 @@ public final class SubmissionFileWriter {
         StringBuilder sb = new StringBuilder(castToString(Constant.TAB, Constant.FILE_MAPPING_HEADER, Constant.FILE_ID,
                 Constant.FILE_TYPE, Constant.FILE_PATH, Constant.FILE_MAPPING));
         if (hasPrideAccession) {
-            sb.append(Constant.PRIDE_ACCESSION);
             sb.append('\t');
+            sb.append(Constant.PRIDE_ACCESSION);
         }
         if (hasURLs) {
-            sb.append(Constant.URL);
             sb.append('\t');
+            sb.append(Constant.URL);
         }
         writer.println(sb.toString());
     }
@@ -372,12 +372,12 @@ public final class SubmissionFileWriter {
         StringBuilder sb = new StringBuilder(castToString(Constant.TAB, Constant.FILE_MAPPING_ENTRY, dataFile.getFileId(),
                 type, path, mappings));
         if (hasPrideAccession) {
-            sb.append(prideAccession);
             sb.append('\t');
+            sb.append(prideAccession);
         }
         if (hasURLs) {
-            sb.append(url);
             sb.append('\t');
+            sb.append(url);
         }
         writer.println(sb.toString());
     }
