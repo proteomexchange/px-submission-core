@@ -264,14 +264,12 @@ public final class SubmissionFileWriter {
     }
 
     private static boolean hasURL(List<DataFile> dataFiles) {
-        boolean result = false;
         for (DataFile dataFile : dataFiles) {
-            if (dataFile.getUrl() != null && !dataFile.getUrl().toString().trim().isEmpty()) {
-                result = true;
-                break;
+            if (dataFile.isUrl()) {
+                return true;
             }
         }
-        return result;
+        return false;
     }
 
     /**
