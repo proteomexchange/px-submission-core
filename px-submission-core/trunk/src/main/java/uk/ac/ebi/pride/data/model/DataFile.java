@@ -156,7 +156,7 @@ public class DataFile implements Serializable {
     }
 
     public boolean isUrl() {
-        return url != null;
+        return url != null && !url.toString().isEmpty();
     }
 
     public URL getUrl() {
