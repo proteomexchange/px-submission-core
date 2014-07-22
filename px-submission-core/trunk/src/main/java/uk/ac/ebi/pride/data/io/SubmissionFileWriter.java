@@ -348,7 +348,7 @@ public final class SubmissionFileWriter {
         if (dataFile.isUrl()) {
             url = dataFile.getUrl().toString();
             if (path.isEmpty()) {
-                path = dataFile.getUrl().getFile();
+                path = dataFile.getUrl().toString();
             }
         }
 
