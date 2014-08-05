@@ -45,7 +45,7 @@ public enum MassSpecFileFormat {
     RAW("raw", true, ProjectFileType.RAW),
     AGILENT_MASSHUNTER_RAW("d", false, ProjectFileType.RAW),
     IBD("ibd", true, ProjectFileType.RAW),
-    IMZML("imzml", true, ProjectFileType.IMAGE_DATA),
+    IMZML("imzml", true, ProjectFileType.MS_IMAGE_DATA),
     FASTA("fasta", true, ProjectFileType.FASTA),
     TIF("tif", true, ProjectFileType.GEL),
     GIF("gif", true, ProjectFileType.GEL),
