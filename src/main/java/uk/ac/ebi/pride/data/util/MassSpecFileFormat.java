@@ -158,7 +158,7 @@ public enum MassSpecFileFormat {
             } else if ("gz".equalsIgnoreCase(ext)) {
                 format = checkGzippedFile(file);
             } else if ("mzml".equalsIgnoreCase(ext)) {
-                format = checkXmlFileContent(file);
+                format = file.exists() ? checkXmlFileContent(file) : MZML;
             } else if ("txt".equalsIgnoreCase(ext)) {
                 format = null;
             } else if ("xls".equalsIgnoreCase(ext)) {
