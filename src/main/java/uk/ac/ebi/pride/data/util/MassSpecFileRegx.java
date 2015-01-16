@@ -16,7 +16,9 @@ public class MassSpecFileRegx {
 
     public static final Pattern PRIDE_XML_PATTERN = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<ExperimentCollection [^>]*>", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
-    public static final Pattern MZML_PATTERN = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(mzML)|(indexedmzML) [^>]*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    public static final Pattern MZML_PATTERN = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<mzML [^>]*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+
+    public static final Pattern INDEXED_MZML_PATTERN = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<indexedmzML [^>]*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
     public static final Pattern MZIDENTML_PATTERN = Pattern.compile("^[^<]*(<\\?xml [^>]*>\\s*(<!--[^>]*-->\\s*)*)?<(MzIdentML)|(indexedmzIdentML) [^>]*", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 

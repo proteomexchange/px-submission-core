@@ -7,6 +7,7 @@ import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -184,6 +185,8 @@ public class DataFile implements Serializable {
                     fileFormat = MassSpecFileFormat.checkFormat(url);
                 }
             } catch (IOException e) {
+                // do nothing here
+            } catch (URISyntaxException e) {
                 // do nothing here
             }
         }

@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.data.util;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
@@ -20,6 +21,7 @@ import java.util.zip.ZipFile;
 public enum MassSpecFileFormat {
     MGF("mgf", true, ProjectFileType.PEAK),
     MZML("mzml", true, ProjectFileType.RAW),
+    INDEXED_MZML("mzml", true, ProjectFileType.RAW),
     MZIDENTML("mzid", true, ProjectFileType.RESULT),
     PRIDE("xml", true, ProjectFileType.RESULT),
     DAT("dat", true, ProjectFileType.SEARCH),
@@ -50,7 +52,7 @@ public enum MassSpecFileFormat {
     IBD("ibd", true, ProjectFileType.RAW),
     IMG("img", true, ProjectFileType.RAW),
     IMZML("imzml", true, ProjectFileType.MS_IMAGE_DATA),
-    HDR ("hdr", true, ProjectFileType.MS_IMAGE_DATA),
+    HDR("hdr", true, ProjectFileType.MS_IMAGE_DATA),
     FASTA("fasta", true, ProjectFileType.FASTA),
     TIF("tif", true, ProjectFileType.GEL),
     GIF("gif", true, ProjectFileType.GEL),
@@ -117,10 +119,24 @@ public enum MassSpecFileFormat {
      * @param url given URL
      * @return MassSpecFileType    mass spec file type
      */
-    public static ProjectFileType getType(URL url) throws IOException {
+    public static ProjectFileType getType(URL url) throws IOException, URISyntaxException {
         MassSpecFileFormat format = checkFormat(url);
 
         return format == null ? ProjectFileType.OTHER : format.getFileType();
+    }
+
+    /**
+     * Detect mass spec file format
+     *
+     * @param url input URL
+     * @return MassSpecFileFormat  mass spec file format
+     */
+    public static MassSpecFileFormat checkFormat(URL url) throws IOException, URISyntaxException {
+        String urlStr = url.getFile();
+        String fileName = urlStr.substring(urlStr.lastIndexOf("/") + 1, urlStr.length());
+        File file = new File(fileName);
+
+        return checkFormat(file);
     }
 
     /**
@@ -132,125 +148,82 @@ public enum MassSpecFileFormat {
     public static MassSpecFileFormat checkFormat(File file) throws IOException {
         MassSpecFileFormat format = null;
 
-        boolean isFile = file.isFile();
-
         String ext = FileUtil.getFileExtension(file);
-
-        boolean emptyFile = !FileUtil.isFileEmpty(file);
-
-        if (ext != null && emptyFile) {
-            if ("xml".equals(ext.toLowerCase())) {
-                // read file content to detect the type
-                format = checkXmlFormat(file);
-            } else if ("zip".equals(ext.toLowerCase())) {
-                format = checkZippedFileExtension(file);
-                if (format == null) {
-                    format = checkZippedFileContent(file);
-                }
-            } else if ("gz".equals(ext.toLowerCase())) {
-                format = checkGzippedFileExtension(file);
-                if (format == null) {
-                    format = checkGzippedFileContent(file);
-                }
-            } else if ("txt".equals(ext.toLowerCase())) {
-                format = null;
-            } else if ("xls".equals(ext.toLowerCase())) {
-                format = null;
-            } else {
-                format = checkFormat(ext, isFile);
-            }
-        }
-
-        return format;
-    }
-
-    /**
-     * Detect mass spec file format
-     *
-     * @param url input URL
-     * @return MassSpecFileFormat  mass spec file format
-     */
-    public static MassSpecFileFormat checkFormat(URL url) throws IOException {
-
-        MassSpecFileFormat format = null;
-
-        String urlPath = url.getFile();
-
-        String ext = getUrlFileExtension(urlPath);
 
         if (ext != null) {
             if ("xml".equalsIgnoreCase(ext)) {
-                // Try to detect the type from file name ending
-                if (urlPath.endsWith(".xt.xml")) {
-                    format = MassSpecFileFormat.XTANDEM;
-                } else if (urlPath.endsWith(".pride.xml")) {
-                    format = MassSpecFileFormat.PRIDE;
-                }
+                format = checkXmlFile(file);
             } else if ("zip".equalsIgnoreCase(ext)) {
-                format = checkCompressedFormat(urlPath, "zip");
+                format = checkZippedFile(file);
             } else if ("gz".equalsIgnoreCase(ext)) {
-                format = checkCompressedFormat(urlPath, "gz");
+                format = checkGzippedFile(file);
+            } else if ("mzml".equalsIgnoreCase(ext)) {
+                format = checkXmlFileContent(file);
             } else if ("txt".equalsIgnoreCase(ext)) {
                 format = null;
             } else if ("xls".equalsIgnoreCase(ext)) {
                 format = null;
             } else {
-                format = checkFormat(ext, true);
+                format = checkFormatByExtension(ext);
             }
         }
 
         return format;
-    }
-
-    private static String getUrlFileExtension(String urlPath) {
-        String ext = null;
-        int lastDotIndex = urlPath.lastIndexOf(".");
-        if (lastDotIndex >= 0) {
-            // Exclude '.' from file extension
-            ext = urlPath.substring(lastDotIndex + 1).toLowerCase();
-        }
-        return ext;
-    }
-
-    /**
-     * Detect file format of compressed file by detecting file extension
-     *
-     * @param filename filename of compressed file
-     * @param comprExt filename extension of compressed file, excluding dot '.'
-     * @return MassSpecFileFormat mass spec file format
-     */
-    private static MassSpecFileFormat checkCompressedFormat(String filename, String comprExt) {
-
-        // Remove compression file extension from filename to check
-        String testFilename = filename.substring(0, (filename.length() - comprExt.length()));
-
-        // Get filename extension for uncompressed file
-        String ext = FileUtil.getFileExtension(new File(testFilename));
-
-        for (MassSpecFileFormat value : values()) {
-            if (value.getFileExtension().equals(ext) && value.isFileFormat()) {
-                return value;
-            }
-        }
-
-        return null;
     }
 
     /**
      * Detect file format by detecting file extension
      *
      * @param ext    extension of a given file or folder
-     * @param isFile whether input is a file
      * @return MassSpecFileFormat  mass spec file format
      */
-    private static MassSpecFileFormat checkFormat(String ext, boolean isFile) {
+    private static MassSpecFileFormat checkFormatByExtension(String ext) {
         for (MassSpecFileFormat value : values()) {
-            if (value.getFileExtension().equalsIgnoreCase(ext) && (value.isFileFormat() == isFile)) {
+            if (value.getFileExtension().equalsIgnoreCase(ext) && value.isFileFormat()) {
                 return value;
             }
         }
 
         return null;
+    }
+
+
+    /**
+     * Check the file format of a xml file
+     *
+     * @param file  input xml file
+     * @return  file format
+     * @throws IOException
+     */
+    private static MassSpecFileFormat checkXmlFile(File file) throws IOException {
+        MassSpecFileFormat fileFormat = checkXmlFileExtension(file);
+
+        if (fileFormat == null && file.exists() && !FileUtil.isFileEmpty(file)) {
+            fileFormat = checkXmlFileContent(file);
+        }
+
+        return fileFormat;
+    }
+
+    /**
+     * Check the file format of a xml file by its extension
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    private static MassSpecFileFormat checkXmlFileExtension(File file) throws IOException {
+        String fileName = file.getName();
+
+        MassSpecFileFormat format = null;
+
+        if (fileName.endsWith(".xt.xml")) {
+            format = MassSpecFileFormat.XTANDEM;
+        } else if (fileName.endsWith(".pride.xml")) {
+            format = MassSpecFileFormat.PRIDE;
+        }
+
+        return format;
     }
 
     /**
@@ -259,7 +232,7 @@ public enum MassSpecFileFormat {
      * @param file xml file
      * @return MassSpecFileFormat  mass spec file format
      */
-    private static MassSpecFileFormat checkXmlFormat(File file) throws IOException {
+    private static MassSpecFileFormat checkXmlFileContent(File file) throws IOException {
         MassSpecFileFormat format = null;
         BufferedReader reader = null;
 
@@ -283,6 +256,7 @@ public enum MassSpecFileFormat {
         return format;
     }
 
+
     private static MassSpecFileFormat checkZippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format = null;
 
@@ -295,7 +269,7 @@ public enum MassSpecFileFormat {
                 ZipEntry entry = entries.nextElement();
                 String fileName = entry.getName();
                 String fileExtension = FileUtil.getFileExtension(fileName);
-                format = checkFormat(fileExtension, true);
+                format = checkFormatByExtension(fileExtension);
             }
         } finally {
             if (zipFile != null) {
@@ -304,6 +278,26 @@ public enum MassSpecFileFormat {
         }
 
         return format;
+    }
+
+
+    /**
+     * Check the file format of a zip file
+     * <p/>
+     * Taking into account of both the file name and file content if the file exists
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    private static MassSpecFileFormat checkZippedFile(File file) throws IOException {
+        MassSpecFileFormat fileFormat = checkZippedFileExtension(file);
+
+        if (fileFormat == null && file.exists() && !FileUtil.isFileEmpty(file)) {
+            fileFormat = checkZippedFileContent(file);
+        }
+
+        return fileFormat;
     }
 
     /**
@@ -342,13 +336,40 @@ public enum MassSpecFileFormat {
         return format;
     }
 
+
+    /**
+     * Check the file format of a gzipped file
+     * <p/>
+     * Taking into account of both the file extension and file content if the file exists
+     *
+     * @param file gzipped input file
+     * @return file format
+     * @throws IOException
+     */
+    private static MassSpecFileFormat checkGzippedFile(File file) throws IOException {
+        MassSpecFileFormat fileFormat = checkGzippedFileExtension(file);
+
+        if (fileFormat == null && file.exists() && !FileUtil.isFileEmpty(file)) {
+            fileFormat = checkGzippedFileContent(file);
+        }
+
+        return fileFormat;
+    }
+
+    /**
+     * Check gzipped file by extension
+     *
+     * @param file gzipped input file
+     * @return file format
+     * @throws IOException
+     */
     private static MassSpecFileFormat checkGzippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format;
 
         String fileName = file.getName();
         fileName = fileName.substring(0, fileName.length() - 3);
         String fileExtension = FileUtil.getFileExtension(fileName);
-        format = checkFormat(fileExtension, true);
+        format = checkFormatByExtension(fileExtension);
 
         return format;
     }
@@ -400,6 +421,8 @@ public enum MassSpecFileFormat {
             format = PRIDE;
         } else if (MassSpecFileRegx.MZML_PATTERN.matcher(content).find()) {
             format = MZML;
+        } else if (MassSpecFileRegx.INDEXED_MZML_PATTERN.matcher(content).find()) {
+            format = INDEXED_MZML;
         } else if (MassSpecFileRegx.MZIDENTML_PATTERN.matcher(content).find()) {
             format = MZIDENTML;
         } else if (MassSpecFileRegx.MZXML_PATTERN.matcher(content).find()) {
