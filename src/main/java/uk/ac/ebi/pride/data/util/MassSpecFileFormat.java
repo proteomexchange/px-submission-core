@@ -348,7 +348,10 @@ public enum MassSpecFileFormat {
      */
     private static MassSpecFileFormat checkGzippedFile(File file) throws IOException {
         MassSpecFileFormat fileFormat = checkGzippedFileExtension(file);
-
+ 
+        if (fileFormat != null && fileFormat.equals(MassSpecFileFormat.MZML) && file.exists()) {
+        	fileFormat = checkGzippedFileContent(file);
+        }
         if (fileFormat == null && file.exists() && !FileUtil.isFileEmpty(file)) {
             fileFormat = checkGzippedFileContent(file);
         }
@@ -370,7 +373,6 @@ public enum MassSpecFileFormat {
         fileName = fileName.substring(0, fileName.length() - 3);
         String fileExtension = FileUtil.getFileExtension(fileName);
         format = checkFormatByExtension(fileExtension);
-
         return format;
     }
 
@@ -419,10 +421,10 @@ public enum MassSpecFileFormat {
 
         if (MassSpecFileRegx.PRIDE_XML_PATTERN.matcher(content).find()) {
             format = PRIDE;
-        } else if (MassSpecFileRegx.MZML_PATTERN.matcher(content).find()) {
-            format = MZML;
         } else if (MassSpecFileRegx.INDEXED_MZML_PATTERN.matcher(content).find()) {
             format = INDEXED_MZML;
+        } else if (MassSpecFileRegx.MZML_PATTERN.matcher(content).find()) {
+             format = MZML;
         } else if (MassSpecFileRegx.MZIDENTML_PATTERN.matcher(content).find()) {
             format = MZIDENTML;
         } else if (MassSpecFileRegx.MZXML_PATTERN.matcher(content).find()) {
