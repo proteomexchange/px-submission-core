@@ -39,10 +39,11 @@
         </developer>
     </developers>
 
+    <!-- for release-->
     <scm>
-        <connection>scm:svn:https://proteomexchange.googlecode.com/svn/px-submission-core/trunk</connection>
-        <developerConnection>scm:svn:https://proteomexchange.googlecode.com/svn/px-submission-core/trunk</developerConnection>
-        <url>https://proteomexchange.googlecode.com/svn/px-submission-core/trunk</url>
+        <connection>scm:git:git@github.com:proteomexchange/px-submission-core.git</connection>
+        <developerConnection>scm:git:git@github.com:proteomexchange/px-submission-core.git</developerConnection>
+        <url>https://github.com/proteomexchange/px-submission-core</url>
     </scm>
 
     <properties>
@@ -145,5 +146,18 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <!-- EBI repo -->
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo</url>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <snapshotRepository>
+            <id>nexus-ebi-repo-snapshots</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
