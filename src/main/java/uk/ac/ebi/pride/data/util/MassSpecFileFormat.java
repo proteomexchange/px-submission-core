@@ -37,6 +37,7 @@ public enum MassSpecFileFormat {
     PEPTIDE_PROPHET("pepxml", true, ProjectFileType.SEARCH),
     PROTEIN_PROPHET("protxml", true, ProjectFileType.SEARCH),
     PROTEIN_PILOT("group", true, ProjectFileType.SEARCH),
+    PROTEOME_DISCOVERER("msf", true, ProjectFileType.SEARCH),
     VEMS_PKX("pkx", true, ProjectFileType.RAW),
     MS2("ms2", true, ProjectFileType.PEAK),
     MZDATA("mzdata", true, ProjectFileType.RAW),
