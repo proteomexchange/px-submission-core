@@ -121,6 +121,11 @@ public class ProjectMetaData implements Serializable {
     private final Set<String> pubmedIds = new HashSet<String>();
 
     /**
+     * a list of DOIs, optional
+     */
+    private final Set<String> dois = new HashSet<String>();
+
+    /**
      * resubmission, reference previously submitted px accession, optional
      */
     private String resubmissionPxAccession;
@@ -164,6 +169,7 @@ public class ProjectMetaData implements Serializable {
                 null,
                 null,
                 null,
+                null,
                 null);
     }
 
@@ -189,6 +195,7 @@ public class ProjectMetaData implements Serializable {
                            Set<CvParam> quantifications,
                            Set<Param> additional,
                            Set<String> pubmedIds,
+                           Set<String> dois,
                            String resubmissionPxAccession,
                            Set<String> reanalysisAccessions) {
         this.projectTitle = projectTitle;
@@ -245,6 +252,10 @@ public class ProjectMetaData implements Serializable {
 
         if (pubmedIds != null) {
             this.pubmedIds.addAll(pubmedIds);
+        }
+
+        if (dois != null) {
+            this.dois.addAll(dois);
         }
 
         this.resubmissionPxAccession = resubmissionPxAccession;
@@ -540,6 +551,36 @@ public class ProjectMetaData implements Serializable {
         this.pubmedIds.clear();
     }
 
+    public boolean hasDois() {
+        return !dois.isEmpty();
+    }
+
+    public Set<String> getDois() {
+        return dois;
+    }
+
+    public int getNumberOfDois() {
+        return dois.size();
+    }
+
+    public boolean hasDoi(String doi) {
+        return dois.contains(doi);
+    }
+
+    public void addDois(String... doi) {
+        dois.addAll(Arrays.asList(doi));
+    }
+
+    public void removeDois(String ... doi) {
+        if (doi!= null) {
+            dois.removeAll(Arrays.asList(doi));
+        }
+    }
+
+    public void clearDois() {
+        this.dois.clear();
+    }
+
     public boolean isResubmission() {
         return resubmissionPxAccession != null;
     }
@@ -703,6 +744,7 @@ public class ProjectMetaData implements Serializable {
         if (!projectTags.equals(that.projectTags)) return false;
         if (projectTitle != null ? !projectTitle.equals(that.projectTitle) : that.projectTitle != null) return false;
         if (!pubmedIds.equals(that.pubmedIds)) return false;
+        if (!dois.equals(that.dois)) return false;
         if (!quantifications.equals(that.quantifications)) return false;
         if (!reanalysisAccessions.equals(that.reanalysisAccessions)) return false;
         if (reasonForPartialSubmission != null ? !reasonForPartialSubmission.equals(that.reasonForPartialSubmission) : that.reasonForPartialSubmission != null)
@@ -743,6 +785,7 @@ public class ProjectMetaData implements Serializable {
         result = 31 * result + quantifications.hashCode();
         result = 31 * result + additional.hashCode();
         result = 31 * result + pubmedIds.hashCode();
+        result = 31 * result + dois.hashCode();
         result = 31 * result + (resubmissionPxAccession != null ? resubmissionPxAccession.hashCode() : 0);
         result = 31 * result + reanalysisAccessions.hashCode();
         return result;

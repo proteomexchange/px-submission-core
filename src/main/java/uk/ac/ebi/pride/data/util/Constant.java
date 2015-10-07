@@ -98,6 +98,8 @@ public class Constant {
 
     public static final String PUBMED_ID = "pubmed_id";
 
+    public static final String DOI = "DOI";
+
     public static final String RESUBMISSION_PX_ACCESSION = "resubmission_px";
 
     public static final String REANALYSIS_PX_ACCESSION = "reanalysis_px";
@@ -180,7 +182,7 @@ public class Constant {
 
     public static final Pattern PUBMED_PATTERN = Pattern.compile("^\\d+$");
 
-    public static final Pattern DOI_PATTERN = Pattern.compile("^10\\.\\d+/\\d+$");
+    public static final Pattern DOI_PATTERN = Pattern.compile("^10\\.\\d+/");
 
     public static final Pattern PX_PATTERN = Pattern.compile("^PXD\\d{6}");
 

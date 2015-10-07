@@ -26,6 +26,7 @@ MTD	modification	[MOD, MOD:00199, D-alanine-1,]
 MTD	quantification	[PRIDE, PRIDE:00199, label free,]
 MTD	pubmed_id	12345
 MTD	pubmed_id	23456
+MTD	doi	10.6019/PXD003006
 MTD	reanalysis_px	PXD000004
 MTD	reanalysis_px	PXD000005
 MTD	resubmission_px	PXD000001

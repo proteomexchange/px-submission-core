@@ -71,6 +71,7 @@ public final class SubmissionValidator {
                     .combine(validateExperimentMethods(projectMetaData.getMassSpecExperimentMethods()))
                     .combine(validateKeywords(projectMetaData.getKeywords()))
                     .combine(validatePubmedIds(projectMetaData.getPubmedIds()))
+                    .combine(validateDois(projectMetaData.getDois()))
                     .combine(validateResubmissionPxAccession(projectMetaData.getResubmissionPxAccession()))
                     .combine(validateReanalysisPxAccessions(projectMetaData.getReanalysisAccessions()))
                     .combine(validateAdditional(projectMetaData.getAdditional()))
@@ -429,6 +430,21 @@ public final class SubmissionValidator {
     }
 
     /**
+     * Validate DOIs
+     */
+    public static ValidationReport validateDois(Set<String> dois) {
+        ValidationReport report = new ValidationReport();
+
+        if (dois != null) {
+            for (String doi : dois) {
+                report.combine(validateDoi(doi));
+            }
+        }
+
+        return report;
+    }
+
+    /**
      * Validate resubmission px accession
      */
     public static ValidationReport validateResubmissionPxAccession(String px) {
@@ -753,6 +769,22 @@ public final class SubmissionValidator {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "PubMed is valid: " + id));
         } else {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "PubMed is invalid: " + id));
+        }
+
+        return report;
+    }
+
+    /**
+     * Validate pubmed id
+     */
+    public static ValidationReport validateDoi(String doi) {
+        ValidationReport report = new ValidationReport();
+
+        Matcher m = Constant.DOI_PATTERN.matcher(doi);
+        if (m.lookingAt()) {
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "DOI is valid: " + doi));
+        } else {
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "DOI is invalid: " + doi));
         }
 
         return report;

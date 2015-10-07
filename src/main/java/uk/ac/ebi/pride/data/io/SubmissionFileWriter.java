@@ -118,6 +118,11 @@ public final class SubmissionFileWriter {
             writeProjectMetaData(writer, Constant.PUBMED_ID, projectMetaData.getPubmedIds(), false);
         }
 
+        // DOIs
+        if (projectMetaData.hasDois()) {
+            writeProjectMetaData(writer, Constant.DOI, projectMetaData.getDois(), false);
+        }
+
         // resubmission
         if (projectMetaData.isResubmission()) {
             writeProjectMetaData(writer, Constant.RESUBMISSION_PX_ACCESSION, projectMetaData.getResubmissionPxAccession());

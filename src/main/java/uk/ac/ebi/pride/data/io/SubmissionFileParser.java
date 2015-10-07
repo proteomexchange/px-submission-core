@@ -277,7 +277,10 @@ public class SubmissionFileParser {
             } else if (Constant.PUBMED_ID.equalsIgnoreCase(type)) {
                 // pubmed ids
                 projectMetaData.addPubmedIds(value);
-            } else if (Constant.RESUBMISSION_PX_ACCESSION.equalsIgnoreCase(type)) {
+            } else if (Constant.DOI.equalsIgnoreCase(type)) {
+                // DOIs
+                projectMetaData.addDois(value);
+            }else if (Constant.RESUBMISSION_PX_ACCESSION.equalsIgnoreCase(type)) {
                 projectMetaData.setResubmissionPxAccession(value);
             } else if (Constant.REANALYSIS_PX_ACCESSION.equalsIgnoreCase(type)) {
                 projectMetaData.addReanalysisPxAccessions(value);
