@@ -636,7 +636,8 @@ public final class SubmissionValidator {
         } else {
             for (CvParam mod : mods) {
                 String cvLabel = mod.getCvLabel();
-                if (!Constant.PSI_MOD.equalsIgnoreCase(cvLabel) && !Constant.UNIMOD.equalsIgnoreCase(cvLabel) && !Constant.PRIDE.equalsIgnoreCase(cvLabel)) {
+                if (!Constant.PSI_MOD.equalsIgnoreCase(cvLabel) && !Constant.UNIMOD.equalsIgnoreCase(cvLabel) && !Constant.PRIDE.equalsIgnoreCase(cvLabel)
+                        && !(Constant.MS.equalsIgnoreCase(cvLabel) && "MS:1001460".equalsIgnoreCase(mod.getAccession()))) {
                     report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Modification must be defined using PSI MOD, UNIMOD or PRIDE: " + mod.getAccession()));
                 }
 
