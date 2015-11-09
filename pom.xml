@@ -53,7 +53,7 @@
     <scm>
         <connection>scm:git:https://github.com/proteomexchange/px-submission-core.git</connection>
         <developerConnection>scm:git:https://github.com/proteomexchange/px-submission-core.git</developerConnection>
-        <url>scm:git:https://github.com/proteomexchange/px-submission-core.gite</url>
+        <url>scm:git:https://github.com/proteomexchange/px-submission-core.git</url>
       <tag>HEAD</tag>
   </scm>
 
@@ -145,7 +145,8 @@
     </build>
 
     <repositories>
-        <repository> <!-- EBI repo -->
+        <!-- EBI repo -->
+        <repository>
             <id>nexus-ebi-repo</id>
             <name>The EBI internal repository</name>
             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/</url>
@@ -155,7 +156,8 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository> <!-- EBI SNAPSHOT repo -->
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
             <id>nexus-ebi-snapshot-repo</id>
             <name>The EBI internal snapshot repository</name>
             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots/</url>
