@@ -39,6 +39,8 @@ Thumbs.db
 # Intellij generated files #
 #####################
 *.iml
+*.releaseBackup
+release.properties
 
 # Directory to ignore #
 #####################

@@ -37,6 +37,16 @@
             </roles>
             <timezone>0</timezone>
         </developer>
+        <developer>
+            <id>tobias</id>
+            <name>Tobias Ternent</name>
+            <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
+            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>0</timezone>
+        </developer>
     </developers>
 
     <!-- for release-->
@@ -48,7 +58,16 @@
   </scm>
 
     <properties>
+        <!-- archive data provider api dependency -->
         <archive.data.provider.api.version>2.0.5</archive.data.provider.api.version>
+        <!-- maven compiler dependency -->
+        <maven.compiler.version>3.3</maven.compiler.version>
+        <!-- maven source dependency -->
+        <maven.source.version>2.4</maven.source.version>
+        <!-- maven release dependency -->
+        <maven.release.version>2.5.3</maven.release.version>
+        <!-- maven jar dependency -->
+        <maven.jar.version>2.4</maven.jar.version>
     </properties>
 
     <dependencies>
@@ -71,17 +90,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>${maven.source.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -96,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
+                <version>${maven.release.version}</version>
                 <configuration>
                     <remoteTagging>true</remoteTagging>
                     <goals>deploy</goals>
@@ -106,7 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>${maven.jar.version}</version>
                 <configuration>
                     <!-- comment exclusion section out if want to run batch dbtest -->
                     <excludes>
