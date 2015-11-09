@@ -51,9 +51,9 @@
 
     <!-- for release-->
     <scm>
-        <connection>scm:git:git@github.com:proteomexchange/px-submission-core.git</connection>
-        <developerConnection>scm:git:git@github.com:proteomexchange/px-submission-core.git</developerConnection>
-        <url>https://github.com/proteomexchange/px-submission-core</url>
+        <connection>scm:git:https://github.com/proteomexchange/px-submission-core.git</connection>
+        <developerConnection>scm:git:https://github.com/proteomexchange/px-submission-core.git</developerConnection>
+        <url>scm:git:https://github.com/proteomexchange/px-submission-core.gite</url>
       <tag>HEAD</tag>
   </scm>
 
