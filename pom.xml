@@ -55,7 +55,7 @@
         <developerConnection>scm:git:https://github.com/proteomexchange/px-submission-core.git</developerConnection>
         <url>scm:git:https://github.com/proteomexchange/px-submission-core.git</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <properties>
         <!-- archive data provider api dependency -->

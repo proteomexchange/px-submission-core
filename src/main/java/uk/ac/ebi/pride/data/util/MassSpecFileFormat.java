@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 /**
@@ -272,6 +273,9 @@ public enum MassSpecFileFormat {
                 String fileExtension = FileUtil.getFileExtension(fileName);
                 format = checkFormatByExtension(fileExtension);
             }
+        } catch (ZipException ze) {
+            // unable to extract zip file, perhaps has nested directories or too large in size
+            format = null;
         } finally {
             if (zipFile != null) {
                 zipFile.close();
@@ -328,6 +332,9 @@ public enum MassSpecFileFormat {
                 String content = new String(data);
                 format = detectFormat(content);
             }
+        } catch (ZipException ze) {
+            // unable to extract zip file, perhaps has nested directories or too large in size
+            format = null;
         } finally {
             if (zipFile != null) {
                 zipFile.close();
