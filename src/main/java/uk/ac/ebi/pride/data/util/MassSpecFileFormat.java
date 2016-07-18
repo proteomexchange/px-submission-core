@@ -59,7 +59,8 @@ public enum MassSpecFileFormat {
     TIF("tif", true, ProjectFileType.GEL),
     GIF("gif", true, ProjectFileType.GEL),
     PNG("png", true, ProjectFileType.GEL),
-    JPG("jpg", true, ProjectFileType.GEL);
+    JPG("jpg", true, ProjectFileType.GEL),
+    MZTAB("mztab", true, ProjectFileType.RESULT);
 
 
     private String fileExtension;
