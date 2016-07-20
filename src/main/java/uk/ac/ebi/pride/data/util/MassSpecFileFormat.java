@@ -161,12 +161,16 @@ public enum MassSpecFileFormat {
             } else if ("gz".equalsIgnoreCase(ext)) {
                 format = checkGzippedFile(file);
             } else if ("mzml".equalsIgnoreCase(ext)) {
+                // NOTE - Why checkFormatByExtension is not being used for this particular format?
                 format = file.exists() ? checkXmlFileContent(file) : MZML;
             } else if ("txt".equalsIgnoreCase(ext)) {
+                // TODO - Shouldn't we look at the content of the file?
                 format = null;
             } else if ("xls".equalsIgnoreCase(ext)) {
                 format = null;
             } else {
+                // This identifies all those formats whose extension is in the list of values, including mzTab which
+                // has been introduced recently
                 format = checkFormatByExtension(ext);
             }
         }
@@ -441,6 +445,11 @@ public enum MassSpecFileFormat {
         } else if (MassSpecFileRegx.MZDATA_PATTERN.matcher(content).find()) {
             format = MZDATA;
         }
+        // TODO - Taking into account that this is not a generic algorithm, that gets the regular expression to apply
+        // TODO - as a parameter, when identifying a file format by using a portion of its content, plus, the fact that
+        // TODO - those regular expressions are not used anywhere else, opens the door to either implement mzTab file
+        // TODO - identification in place, or to externalize the identification algorithm, which doesn't need to be
+        // TODO - regex based
 
         return format;
     }
