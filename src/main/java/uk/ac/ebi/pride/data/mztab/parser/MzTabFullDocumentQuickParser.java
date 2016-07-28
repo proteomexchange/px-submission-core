@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.mztab.model.MzTabSectionValidator;
 import uk.ac.ebi.pride.data.mztab.model.OneTimeDefaultValidatorMzTabSectionValidator;
 
+import java.io.File;
+
 /**
  * Project: px-submission-tool
  * Package: uk.ac.ebi.pride.gui.data.mztab.parser
@@ -20,6 +22,10 @@ public class MzTabFullDocumentQuickParser extends MzTabParser {
 
     public MzTabFullDocumentQuickParser(String fileName) {
         super(fileName);
+    }
+
+    public MzTabFullDocumentQuickParser(File file) {
+        super(file);
     }
 
     @Override

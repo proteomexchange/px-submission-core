@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.data.mztab.model.*;
 import uk.ac.ebi.pride.data.mztab.parser.exceptions.MzTabParserException;
 import uk.ac.ebi.pride.data.mztab.parser.readers.LineAndPositionAwareBufferedReader;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -24,18 +25,23 @@ public abstract class MzTabParser {
     private static final Logger logger = LoggerFactory.getLogger(MzTabParser.class);
 
     // Final Product
-    private MzTabDocument mzTabDocument;
+    private MzTabDocument mzTabDocument = null;
 
     // Parser State Delegate
-    private ParserState parserState;
+    private ParserState parserState = null;
 
     // Source mzTab file
     private String fileName;
+    private File sourceFile = null;
 
     protected MzTabParser(String fileName) {
-        mzTabDocument = null;
-        parserState = null;
         this.fileName = fileName;
+        sourceFile = new File(fileName);
+    }
+
+    protected MzTabParser(File file) {
+        fileName = file.getAbsolutePath();
+        sourceFile = file;
     }
 
     protected void setMzTabDocument(MzTabDocument mzTabDocument) {
@@ -89,7 +95,7 @@ public abstract class MzTabParser {
         // open file
         LineAndPositionAwareBufferedReader reader = null;
         try {
-            reader = new LineAndPositionAwareBufferedReader(fileName);
+            reader = new LineAndPositionAwareBufferedReader(sourceFile);
         } catch (IOException e) {
             throw new MzTabParserException("Could not start mzTab parser\n" + e.toString());
         }

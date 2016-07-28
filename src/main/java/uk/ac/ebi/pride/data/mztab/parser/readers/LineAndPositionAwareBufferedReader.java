@@ -56,7 +56,7 @@ public class LineAndPositionAwareBufferedReader {
 
     public static int howManyCrlfChars(String fileName) throws IOException {
         logger.debug("Detecting line break type in the file '" + fileName + "'");
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(fileName));
+        BufferedInputStream in = new BufferedInputStream(FileUtil.getFileInputStream(new File(fileName)));
         return howManyCrlfChars(in);
     }
 
