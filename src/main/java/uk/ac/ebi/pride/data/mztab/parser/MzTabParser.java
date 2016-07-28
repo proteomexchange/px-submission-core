@@ -63,7 +63,7 @@ public abstract class MzTabParser {
 
     // Director of the parsing process
     public final void parse() {
-        if (getMzTabDocument() != null) {
+        if (getMzTabDocument().getMetaData() != null) {
             logger.error("This document has already been parsed!");
             return;
         } else {
@@ -152,7 +152,7 @@ public abstract class MzTabParser {
 
     // Subproducts management code
     // MetaData Section
-    public MetaData getMetaDataSection() {
+    protected MetaData getMetaDataSection() {
         MetaData metaData = getMzTabDocument().getMetaData();
         if (metaData == null) {
             // In the context of a parser processing an mzTab document, it makes sense to create an empty meta data
@@ -164,7 +164,7 @@ public abstract class MzTabParser {
         return metaData;
     }
     // Protein Data manager (section)
-    public ProteinData getProteinDataSection() {
+    protected ProteinData getProteinDataSection() {
         ProteinData proteinData = getMzTabDocument().getProteinData();
         if (proteinData == null) {
             // Create an empty protein data section
@@ -176,7 +176,7 @@ public abstract class MzTabParser {
     }
 
     // Peptide Data manager (section)
-    public PeptideData getPeptideDataSection() {
+    protected PeptideData getPeptideDataSection() {
         PeptideData peptideData = getMzTabDocument().getPeptideData();
         if (peptideData == null) {
             peptideData = new PeptideData();
@@ -186,7 +186,7 @@ public abstract class MzTabParser {
     }
 
     // PSM Data manager (section)
-    public PsmData getPsmDataSection() {
+    protected PsmData getPsmDataSection() {
         PsmData psmData = getMzTabDocument().getPsmData();
         if (psmData == null) {
             psmData = new PsmData();
@@ -196,7 +196,7 @@ public abstract class MzTabParser {
     }
 
     // Small Molecule Data manager (section)
-    public SmallMoleculeData getSmallMoleculeDataSection() {
+    protected SmallMoleculeData getSmallMoleculeDataSection() {
         SmallMoleculeData smallMoleculeData = getMzTabDocument().getSmallMoleculeData();
         if (smallMoleculeData == null) {
             smallMoleculeData = new SmallMoleculeData();
