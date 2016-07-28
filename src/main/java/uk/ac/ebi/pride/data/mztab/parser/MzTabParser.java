@@ -62,7 +62,7 @@ public abstract class MzTabParser {
     }
 
     // Director of the parsing process
-    public final void parse() {
+    public final void parse() throws MzTabParserException {
         if (getMzTabDocument().getMetaData() != null) {
             logger.error("This document has already been parsed!");
             return;
