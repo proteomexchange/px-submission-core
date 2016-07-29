@@ -39,7 +39,7 @@ public abstract class PsmParserState extends ParserState {
     @Override
     public void parseLine(MzTabParser context, String line, long lineNumber, long offset) throws ParserStateException {
         if (!line.trim().isEmpty()) {
-            if (line.matches("^(PSH|PSM|COM)\\s?")) {
+            if (line.matches("^(PSH|PSM|COM)\\s?.*$")) {
                 // We process header, data entries or comments
                 try {
                     if (!getLineItemParsingHandler().parseLine(context, line, lineNumber, offset)) {

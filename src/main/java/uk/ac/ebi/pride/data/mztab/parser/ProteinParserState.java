@@ -39,7 +39,7 @@ public abstract class ProteinParserState extends ParserState {
     @Override
     public void parseLine(MzTabParser context, String line, long lineNumber, long offset) throws ParserStateException {
         if (!line.trim().isEmpty()) {
-            if (line.matches("^(PRH|PRT|COM)\\s?")) {
+            if (line.matches("^(PRH|PRT|COM)\\s?.*$")) {
                 // Header, data entry or comment
                 try {
                     if (!getLineItemParsingHandler().parseLine(context, line, lineNumber, offset)) {

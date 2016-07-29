@@ -3,6 +3,8 @@ package uk.ac.ebi.pride.data.mztab.parser;
 import uk.ac.ebi.pride.data.mztab.model.SmallMoleculeData;
 import uk.ac.ebi.pride.data.mztab.parser.exceptions.LineItemParsingHandlerException;
 
+import java.util.Arrays;
+
 /**
  * Project: px-submission-tool
  * Package: uk.ac.ebi.pride.gui.data.mztab.parser
@@ -109,7 +111,7 @@ public abstract class SmallMoleculeDataHeaderLineItemParsingHandler extends Smal
         if (lineItems[0].equals(MZTAB_SMALL_MOLECULE_DATA_HEADER_KEYWORD)) {
             checkForDuplicatedHeader(context, lineNumber);
             try {
-                return doProcessHeaderColumns(context, lineItems, lineNumber, offset);
+                return doProcessHeaderColumns(context, Arrays.copyOfRange(lineItems, 1, lineItems.length), lineNumber, offset);
             } catch (Exception e) {
                 throw new LineItemParsingHandlerException(e.getMessage());
             }
