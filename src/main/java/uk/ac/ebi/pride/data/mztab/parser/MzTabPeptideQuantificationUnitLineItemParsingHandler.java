@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.data.mztab.parser.exceptions.MetadataLineItemParserStrate
  * All rights reserved.
  */
 public abstract class MzTabPeptideQuantificationUnitLineItemParsingHandler extends MetaDataLineItemParsingHandler implements MetaDataLineItemParsingHandler.LineItemBean {
-    protected static final String MZTAB_PEPTIDE_QUANTIFICATION_UNIT = "peptide_quantification_unit";
+    protected static final String MZTAB_PEPTIDE_QUANTIFICATION_UNIT = "peptide-quantification_unit";
 
     // TODO - Refactor in the future to create external beans that handle this?
     // Bean defaults

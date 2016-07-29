@@ -71,8 +71,8 @@ public class MetadataLineItemProcessingStrategiesParsingStackTest {
     public static Collection<Object[]> subjectsToTest() {
         return Arrays.asList(new Object[][]{
                 {"MTD", "quantification_method", "[MS, MS:1001837, iTRAQ quantitation analysis, ]", "Quantification method", new QuickMzTabQuantificationMethodLineItemParsingHandler()},
-                {"MTD", "protein_quantification_unit", "[PRIDE, PRIDE:0000395, Ratio, ]", "Protein quantification unit", new QuickMzTabProteinQuantificationUnitLineItemParsingHandler()},
-                {"MTD", "peptide_quantification_unit", "[PRIDE, PRIDE:0000395, Ratio, ]", "Peptide quantification unit", new QuickMzTabPeptideQuantificationUnitLineItemParsingHandler()},
+                {"MTD", "protein-quantification_unit", "[PRIDE, PRIDE:0000395, Ratio, ]", "Protein quantification unit", new QuickMzTabProteinQuantificationUnitLineItemParsingHandler()},
+                {"MTD", "peptide-quantification_unit", "[PRIDE, PRIDE:0000395, Ratio, ]", "Peptide quantification unit", new QuickMzTabPeptideQuantificationUnitLineItemParsingHandler()},
                 {"MTD", "small_molecule-quantification_unit", "[PRIDE, PRIDE:0000395, Ratio, ]", "Small Molecule quantification unit", new QuickMzTabSmallMoleculeQuantificationUnitLineItemParsingHandler()}
         });
     }
