@@ -209,7 +209,7 @@ public class DefaultMzTabSectionValidator extends MzTabSectionValidator {
                 logger.error("MISSING Protein quantification unit information but Protein SECTION IS PRESENT");
                 return false;
             }
-            if (!metaData.getProteinQuantificationUnit().validate()) {
+            if ((metaData.getProteinQuantificationUnit() != null) && !metaData.getProteinQuantificationUnit().validate()) {
                 logger.error("given Protein quantification unit DOES NOT VALIDATE");
                 return false;
             }
@@ -218,7 +218,7 @@ public class DefaultMzTabSectionValidator extends MzTabSectionValidator {
                 logger.error("MISSING Peptide quantification unit information but Peptide SECTION IS PRESENT");
                 return false;
             }
-            if (!metaData.getPeptideQuantificationUnit().validate()) {
+            if ((metaData.getPeptideQuantificationUnit() != null) && !metaData.getPeptideQuantificationUnit().validate()) {
                 logger.error("given Peptide quantification unit DOES NOT VALIDATE");
                 return false;
             }
@@ -227,7 +227,7 @@ public class DefaultMzTabSectionValidator extends MzTabSectionValidator {
                 logger.error("MISSING Small Molecule quantification unit information but Small Molecule SECTION IS PRESENT");
                 return false;
             }
-            if (!metaData.getSmallMoleculeQuantificationUnit().validate()) {
+            if ((metaData.getSmallMoleculeQuantificationUnit() != null) && !metaData.getSmallMoleculeQuantificationUnit().validate()) {
                 logger.error("given Small Molecule quantification unit DOES NOT VALIDATE");
                 return false;
             }

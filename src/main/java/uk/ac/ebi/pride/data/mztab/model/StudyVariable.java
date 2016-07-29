@@ -87,6 +87,8 @@ public class StudyVariable {
                 logger.error("Assay with index '" + assayIndex + "' WAS NOT FOUND when solving references for study_variable entry");
                 return false;
             }
+            // Add the referenced Assay
+            addAssay(assay);
         }
         for (int sampleIndex :
                 sampleRefsIndexes) {
@@ -96,6 +98,8 @@ public class StudyVariable {
                 logger.error("Sample with index '" + sampleIndex + "' WAS NOT FOUND when solving references for study_variable entry");
                 return false;
             }
+            // Add the referenced sample
+            addSample(sample);
         }
         return true;
     }

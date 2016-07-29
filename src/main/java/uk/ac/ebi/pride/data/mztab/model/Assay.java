@@ -95,6 +95,7 @@ public class Assay {
                 logger.error("Invalid sample reference index '" + getMsRunRefIndex() + "' when processing assay information");
                 return false;
             }
+            setSampleRef(sample);
         }
         return true;
     }
