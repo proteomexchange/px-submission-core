@@ -12,7 +12,7 @@ import uk.ac.ebi.pride.data.mztab.parser.exceptions.MetadataLineItemParserStrate
  * All rights reserved.
  */
 public abstract class MzTabProteinQuantificationUnitLineItemParsingHandler extends MetaDataLineItemParsingHandler implements MetaDataLineItemParsingHandler.LineItemBean {
-    protected static final String MZTAB_PROTEIN_QUANTIFICATION_UNIT = "protein-quantification_unit";
+    protected static final String MZTAB_PROTEIN_QUANTIFICATION_UNIT_KEY = "protein-quantification_unit";
 
     // TODO - Refactor in the future to create external beans that handle this?
     // Bean defaults
@@ -53,7 +53,7 @@ public abstract class MzTabProteinQuantificationUnitLineItemParsingHandler exten
         cleanBean();
         try {
             if (MetadataLineItemParserStrategy.parseLine(this, line)) {
-                if (getLineItemKey().equals(MZTAB_PROTEIN_QUANTIFICATION_UNIT)) {
+                if (getLineItemKey().equals(MZTAB_PROTEIN_QUANTIFICATION_UNIT_KEY)) {
                     // The line item key is ok, go ahead
                     return processEntry(context, lineNumber, offset);
                 }
