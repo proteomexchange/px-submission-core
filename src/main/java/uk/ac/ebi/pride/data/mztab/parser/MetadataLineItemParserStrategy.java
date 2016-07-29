@@ -150,9 +150,10 @@ public abstract class MetadataLineItemParserStrategy {
         try {
             if (lineItems.length == 3) {
                 // Extract data
+                // Property key is optional
+                getPropertyKeyIfExists(bean, lineItems);
                 return getLineItemKey(bean, lineItems)
                         && getLineItemIndex(bean, lineItems)
-                        && getPropertyKeyIfExists(bean, lineItems)
                         && getPropertyValue(bean, lineItems);
             }
         } catch (Exception e) {
