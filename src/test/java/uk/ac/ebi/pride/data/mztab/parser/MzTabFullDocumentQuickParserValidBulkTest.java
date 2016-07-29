@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.data.mztab.parser;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -8,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.mztab.model.MzTabDocument;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -39,20 +39,19 @@ public class MzTabFullDocumentQuickParserValidBulkTest {
         this.fileName = fileName;
     }
 
-    // Ignore the following test until I get mzTab compliant samples
     @Test
-    @Ignore
     public void parseFileWithNoError() throws URISyntaxException {
-        MzTabParser parser = new MzTabFullDocumentQuickParser(getTestFilePath(fileName));
+        MzTabParser parser = new MzTabFullDocumentQuickParser(new File(getTestFilePath(fileName)));
         parser.parse();
         MzTabDocument doc = parser.getMzTabDocument();
         logger.debug("mzTab title: " + doc.getMetaData().getTitle());
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> data() {
+    public static Collection<Object[]> validFilesToTest() {
         return Arrays.asList(new Object[][]{
-                {"valid2.mzTab"}
+                {"valid2.mzTab"},
+                {"valid1.mzTab.gz"}
         });
     }
 }
