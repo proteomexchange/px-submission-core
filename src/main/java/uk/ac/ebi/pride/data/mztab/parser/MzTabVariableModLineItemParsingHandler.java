@@ -89,6 +89,7 @@ public abstract class MzTabVariableModLineItemParsingHandler extends MetaDataLin
     @Override
     protected boolean doParseLineItem(MzTabParser context, String line, long lineNumber, long offset) throws LineItemParsingHandlerException {
         // TODO - Consider refactoring this algorithm out
+        cleanBean();
         try {
             if (MetadataLineItemParserStrategy.parseLine(this, line)) {
                 if (getLineItemKey().equals(MZTAB_VARIABLE_MOD_ITEM_KEY)) {
