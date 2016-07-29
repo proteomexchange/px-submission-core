@@ -38,7 +38,7 @@ public abstract class SmallMoleculeParserState extends ParserState {
 
     @Override
     public void parseLine(MzTabParser context, String line, long lineNumber, long offset) throws ParserStateException {
-        if (!line.isEmpty()) {
+        if (!line.trim().isEmpty()) {
             if (line.matches("^(SMH|SML|COM)\\s?")) {
                 // We process header, data entries or comments
                 try {
