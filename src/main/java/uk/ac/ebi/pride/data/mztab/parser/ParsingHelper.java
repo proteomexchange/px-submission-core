@@ -22,7 +22,7 @@ public class ParsingHelper {
      */
     public static int getIndexInSquareBracketsFromIndexedKeyword(String keyword, String token) throws ParsingHelperException {
         try {
-            String key = token.substring(0, token.indexOf("["));
+            String key = token.substring(0, token.indexOf("[")).trim();
             if (key.equals(keyword)) {
                 return Integer.valueOf(token.substring(token.indexOf("[") + 1, token.indexOf("]")));
             }
