@@ -54,6 +54,9 @@ public abstract class MetadataLineItemParserStrategy {
     private static boolean getLineItemIndex(MetaDataLineItemParsingHandler.IndexedLineItemBean bean, String[] lineItems) throws MetadataLineItemParserStrategyException {
         String integerString = null;
         try {
+            if (lineItems[1].indexOf('[') == -1) {
+                return false;
+            }
             integerString = lineItems[1].substring(lineItems[1].indexOf('[') + 1, lineItems[1].indexOf(']'));
         } catch (IndexOutOfBoundsException e) {
             throw new MetadataLineItemParserStrategyException(e.getMessage());
