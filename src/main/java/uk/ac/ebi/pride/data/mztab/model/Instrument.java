@@ -74,12 +74,20 @@ public class Instrument {
         this.name = name;
     }
 
+    public void setName(CvParameter name) {
+        this.name = new Name(name);
+    }
+
     public Source getSource() {
         return source;
     }
 
     public void setSource(Source source) {
         this.source = source;
+    }
+
+    public void setSource(CvParameter source) {
+        this.source = new Source(source);
     }
 
     public Detector getDetector() {
@@ -90,9 +98,17 @@ public class Instrument {
         this.detector = detector;
     }
 
+    public void setDetector(CvParameter detector) {
+        this.detector = new Detector(detector);
+    }
+
     // Analyzers management
     public Analyzer updateAnalyzer(Analyzer analyzer, int index) {
         return analyzers.put(index, analyzer);
+    }
+
+    public Analyzer updateAnalyzer(CvParameter analyzer, int index) {
+        return updateAnalyzer(new Analyzer(analyzer), index);
     }
 
     public Analyzer getAnalyzerEntry(int index) {
