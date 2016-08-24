@@ -128,7 +128,10 @@ public class MetadataIndexedLineItemProcessingStrategiesParsingStackTest {
                 {"MTD", "protein_search_engine_score", 133, "", "[MS, MS:1001171, Mascot:score,]", "protein search engine score", new QuickMzTabProteinSearchEngineScoreLineItemParsingHandler()},
                 {"MTD", "peptide_search_engine_score", 134, "", "[MS, MS:1001171, Mascot:score,]", "peptide search engine score", new QuickMzTabPeptideSearchEngineScoreLineItemParsingHandler()},
                 {"MTD", "psm_search_engine_score", 135, "", "[MS, MS:1001330, X!Tandem:expect,]", "PSM search engine score", new QuickMzTabPsmSearchEngineScoreLineItemParsingHandler()},
-                {"MTD", "smallmolecule_search_engine_score", 136, "", "[, , LipidDataAnalyzer,]", "Small Molecule search engine score", new QuickMzTabSmallMoleculeSearchEngineScoreLineItemParsingHandler()}
+                {"MTD", "smallmolecule_search_engine_score", 136, "", "[, , LipidDataAnalyzer,]", "Small Molecule search engine score", new QuickMzTabSmallMoleculeSearchEngineScoreLineItemParsingHandler()},
+                {"MTD", "instrument", 137, "name", "[MS, MS:1000449, LTQ Orbitrap,]", "Instrument name", new QuickMzTabInstrumentNameLineItemParsingHandler()},
+                {"MTD", "instrument", 138, "source", "[MS, MS:1000073, ESI,]", "Instrument source", new QuickMzTabInstrumentSourceLineItemParsingHandler()},
+                {"MTD", "instrument", 139, "detector", "[MS, MS:1000253, electron multiplier,]", "Instrument detector", new QuickMzTabInstrumentDetectorLineItemParsingHandler()}
         });
     }
 }

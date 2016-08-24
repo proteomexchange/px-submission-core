@@ -158,7 +158,8 @@ public class MetadataIndexedLineItemWithIndexedPropertyProcessingStrategiesParsi
                 {"MTD", "sample", 91, "tissue", 3, "[BTO, BTO:0000221, cell suspension culture, ]", "sample tissue parser", new QuickMzTabSampleTissueLineItemParsingHandler()},
                 {"MTD", "sample", 92, "cell_type", 4, "[CL, CL:0000610, plant cell, ]", "sample cell type parser", new QuickMzTabSampleCellTypeLineItemParsingHandler()},
                 {"MTD", "sample", 93, "disease", 5, "[DOID, DOID:684, hepatocellular carcinoma, ]", "sample disease parser", new QuickMzTabSampleDiseaseLineItemParsingHandler()},
-                {"MTD", "sample", 93, "custom", 5, "[,,Extraction date, 2011-12-21]", "sample custom attribute parser", new QuickMzTabSampleCustomLineItemParsingHandler()}
+                {"MTD", "sample", 93, "custom", 5, "[,,Extraction date, 2011-12-21]", "sample custom attribute parser", new QuickMzTabSampleCustomLineItemParsingHandler()},
+                {"MTD", "instrument", 94, "analyzer", 6, "[MS, MS:1000291, linear ion trap,]", "Instrument analyzer", new QuickMzTabInstrumentAnalyzerLineItemParsingHandler()}
         });
     }
 }
