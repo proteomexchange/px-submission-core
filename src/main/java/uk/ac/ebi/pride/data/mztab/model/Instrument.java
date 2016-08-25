@@ -120,8 +120,20 @@ public class Instrument {
     }
 
     // Validation criteria
-    public boolean validate() throws ValidationException {
-        // There should be, at least, a name, otherwise, having an instance of this has no purpose
-        return (name != null) && name.validate();
+    public boolean validate(MzTabDocument mzTabDocument) throws ValidationException {
+        // TODO - Currently, there is no validation criteria defined for this item in the mzTab specification, so we'll
+        // TODO - just say that, if this is present, it should have at least one attribute
+        boolean analyzersValidate = false;
+        if (analyzers.size() > 0) {
+            analyzersValidate = true;
+            for (int index :
+                    analyzers.keySet()) {
+                analyzersValidate &= analyzers.get(index).validate();
+            }
+        }
+        return ((name != null) && name.validate())
+                || ((source != null) && source.validate())
+                || ((detector != null) && detector.validate())
+                || analyzersValidate;
     }
 }
