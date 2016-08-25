@@ -62,6 +62,10 @@ public class QuickMetaDataParserState extends MetaDataParserState {
                 new QuickMzTabAssaySampleRefLineItemParsingHandler(),
                 new QuickMzTabSoftwareValueLineItemParsingHandler(),
                 new QuickMzTabSoftwareSettingLineItemParsingHandler(),
+                new QuickMzTabInstrumentNameLineItemParsingHandler(),
+                new QuickMzTabInstrumentSourceLineItemParsingHandler(),
+                new QuickMzTabInstrumentDetectorLineItemParsingHandler(),
+                new QuickMzTabInstrumentAnalyzerLineItemParsingHandler(),
                 new IgnorerLinteItemParsingHandler()
         };
         // Build the chain of responsibility
