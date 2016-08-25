@@ -260,6 +260,17 @@ public class DefaultMzTabSectionValidator extends MzTabSectionValidator {
                 return false;
             }
         }
+        
+        // Validation of NOT REQUIRED elements - The following items are not required to be present in the metadata 
+        // section but, if they are, they need to be valid
+        // Instrument data
+        for (int index :
+                metaData.getAvailableInstrumentEntryIndexes()) {
+            if (!metaData.getInstrument(index).validate(mzTabDocument)) {
+                logger.error("Instrument entry with index '" + index + "' DOES NOT VALIDATE");
+                return false;
+            }
+        }
 
         // Up to this point, this section validates
         // WARNING - NOTE - Although some of the conditions are tested multiple times, each validation criteria has been
