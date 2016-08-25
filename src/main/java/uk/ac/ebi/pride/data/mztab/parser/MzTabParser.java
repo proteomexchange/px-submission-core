@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.pride.data.mztab.model.*;
 import uk.ac.ebi.pride.data.mztab.parser.exceptions.MzTabParserException;
+import uk.ac.ebi.pride.data.mztab.parser.exceptions.ParserStateException;
 import uk.ac.ebi.pride.data.mztab.parser.readers.LineAndPositionAwareBufferedReader;
 
 import java.io.File;
@@ -109,9 +110,14 @@ public abstract class MzTabParser {
             }
             if (positionAwareLine != null) {
                 // Parse the line
-                parserState.parseLine(this, positionAwareLine.getLine(),
-                        positionAwareLine.getLineNo(),
-                        positionAwareLine.getOffset());
+                try {
+                    parserState.parseLine(this, positionAwareLine.getLine(),
+                            positionAwareLine.getLineNo(),
+                            positionAwareLine.getOffset());
+                } catch (ParserStateException e) {
+                    logger.error("An error occurred while parsing a section of the mzTab file, '" + e.getMessage() + "'");
+                    throw new MzTabParserException(e.getMessage());
+                }
             } else {
                 // We reached the end of the stream
                 break;
