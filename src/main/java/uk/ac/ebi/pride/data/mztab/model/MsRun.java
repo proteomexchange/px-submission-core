@@ -25,6 +25,8 @@ public class MsRun {
     private URL location = null;
     private MsRunHashMethod hashMethod = null;
     private String hash = null;
+    // Flags
+    private boolean locationSeen = false;
 
     public MsRun() {
     }
@@ -47,6 +49,10 @@ public class MsRun {
         return location;
     }
 
+    public boolean hasLocationBeenSeen() {
+        return locationSeen;
+    }
+
     public void setMsRunFormat(MsRunFormat msRunFormat) {
         this.msRunFormat = msRunFormat;
     }
@@ -57,6 +63,10 @@ public class MsRun {
 
     public void setLocation(URL location) {
         this.location = location;
+    }
+
+    public void setLocationSeen() {
+        locationSeen = true;
     }
 
     public MsRunHashMethod getHashMethod() {
