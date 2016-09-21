@@ -59,7 +59,8 @@ public enum MassSpecFileFormat {
     TIF("tif", true, ProjectFileType.GEL),
     GIF("gif", true, ProjectFileType.GEL),
     PNG("png", true, ProjectFileType.GEL),
-    JPG("jpg", true, ProjectFileType.GEL);
+    JPG("jpg", true, ProjectFileType.GEL),
+    MZTAB("mztab", true, ProjectFileType.RESULT);
 
 
     private String fileExtension;
@@ -160,12 +161,16 @@ public enum MassSpecFileFormat {
             } else if ("gz".equalsIgnoreCase(ext)) {
                 format = checkGzippedFile(file);
             } else if ("mzml".equalsIgnoreCase(ext)) {
+                // NOTE - Why checkFormatByExtension is not being used for this particular format?
                 format = file.exists() ? checkXmlFileContent(file) : MZML;
             } else if ("txt".equalsIgnoreCase(ext)) {
+                // TODO - Shouldn't we look at the content of the file?
                 format = null;
             } else if ("xls".equalsIgnoreCase(ext)) {
                 format = null;
             } else {
+                // This identifies all those formats whose extension is in the list of values, including mzTab which
+                // has been introduced recently
                 format = checkFormatByExtension(ext);
             }
         }
@@ -425,22 +430,12 @@ public enum MassSpecFileFormat {
      * @return mass spec file format
      */
     private static MassSpecFileFormat detectFormat(String content) {
-        MassSpecFileFormat format = null;
-
-        if (MassSpecFileRegx.PRIDE_XML_PATTERN.matcher(content).find()) {
-            format = PRIDE;
-        } else if (MassSpecFileRegx.INDEXED_MZML_PATTERN.matcher(content).find()) {
-            format = INDEXED_MZML;
-        } else if (MassSpecFileRegx.MZML_PATTERN.matcher(content).find()) {
-             format = MZML;
-        } else if (MassSpecFileRegx.MZIDENTML_PATTERN.matcher(content).find()) {
-            format = MZIDENTML;
-        } else if (MassSpecFileRegx.MZXML_PATTERN.matcher(content).find()) {
-            format = MZXML;
-        } else if (MassSpecFileRegx.MZDATA_PATTERN.matcher(content).find()) {
-            format = MZDATA;
-        }
-
-        return format;
+        // NOTE - Taking into account that this is not a generic algorithm, that gets the regular expression to apply
+        // NOTE - as a parameter, when identifying a file format by using a portion of its content, plus, the fact that
+        // NOTE - those regular expressions are not used anywhere else, opens the door to either implement mzTab file
+        // NOTE - identification in place, or to externalize the identification algorithm, which doesn't need to be
+        // NOTE - regex based
+        // Identification process has been refactored out of this method
+        return FileFormatIdentifierFactory.getFileFormatIdentifier().identifyFormatFromContent(content);
     }
 }

@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.model;
 
+import uk.ac.ebi.pride.data.mztab.model.MzTabDocument;
 import uk.ac.ebi.pride.data.util.FileURLUtil;
 import uk.ac.ebi.pride.data.util.MassSpecFileFormat;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
@@ -55,6 +56,9 @@ public class DataFile implements Serializable {
      * Assigned PRIDE accession, optional, should only be assigned to result file
      */
     private String assayAccession;
+
+    // mzTab document, just in case we need anything else from it after parsing the file
+    private MzTabDocument mzTabDocument = null;
 
     public DataFile() {
     }
@@ -134,6 +138,14 @@ public class DataFile implements Serializable {
         if (this.fileType != null && this.fileType.equals(ProjectFileType.RESULT)) {
             this.sampleMetaData = new SampleMetaData();
         }
+    }
+
+    public MzTabDocument getMzTabDocument() {
+        return mzTabDocument;
+    }
+
+    public void setMzTabDocument(MzTabDocument mzTabDocument) {
+        this.mzTabDocument = mzTabDocument;
     }
 
     public int getFileId() {
