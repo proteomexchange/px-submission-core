@@ -17,8 +17,11 @@ import java.net.URL;
  */
 
 public class QuickMzTabMsRunLocationLineItemParsingHandler extends MzTabMsRunLocationLineItemParsingHandler {
+    // TODO - NOTE - Checking for duplicated entries should be performed at a higher level of the hierarchy, as it is a
+    // TODO - NOTE - common policy to all those subclasses actually processing a particular entry. At some point in the
+    // TODO - NOTE - future, it should be refactor out, and promoted up in the class hierarchy
     private void checkForDuplicatedEntry(MzTabParser context, long lineNumber) throws LineItemParsingHandlerException {
-        if (getMsRunFromContext(context, getIndex()).getLocation() != null) {
+        if (getMsRunFromContext(context, getIndex()).hasLocationBeenSeen() || (getMsRunFromContext(context, getIndex()).getLocation() != null)) {
             throw new LineItemParsingHandlerException("DUPLICATED MS-Run location entry FOUND AT LINE " + lineNumber);
         }
     }
@@ -28,7 +31,11 @@ public class QuickMzTabMsRunLocationLineItemParsingHandler extends MzTabMsRunLoc
         checkForDuplicatedEntry(context, lineNumber);
         // Process entry
         try {
-            context.getMetaDataSection().getMsRunEntry(getIndex()).setLocation(new URL(getPropertyValue()));
+            if (!getPropertyValue().trim().equals("null")) {
+                context.getMetaDataSection().getMsRunEntry(getIndex()).setLocation(new URL(getPropertyValue()));
+            }
+            // I've seen a location entry for this ms-run
+            context.getMetaDataSection().getMsRunEntry(getIndex()).setLocationSeen();
         } catch (MalformedURLException e) {
             throw new LineItemParsingHandlerException(e.getMessage());
         }
