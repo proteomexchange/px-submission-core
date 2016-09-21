@@ -51,7 +51,8 @@ public class MzTabFullDocumentQuickParserValidBulkTest {
     public static Collection<Object[]> validFilesToTest() {
         return Arrays.asList(new Object[][]{
                 {"valid2.mzTab"},
-                {"valid1.mzTab.gz"}
+                {"valid1.mzTab.gz"},
+                {"valid3_with_null_location.mzTab"}
         });
     }
 }
