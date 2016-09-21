@@ -63,6 +63,7 @@ public class MsRun {
 
     public void setLocation(URL location) {
         this.location = location;
+        setLocationSeen();
     }
 
     public void setLocationSeen() {
@@ -88,7 +89,7 @@ public class MsRun {
     public boolean validate() throws ValidationException {
         // Validation Criteria
         // location must always be reported
-        if (getLocation() == null) {
+        if (!hasLocationBeenSeen()) {
             logger.error("MISSING ms_run location information");
             return false;
         }
