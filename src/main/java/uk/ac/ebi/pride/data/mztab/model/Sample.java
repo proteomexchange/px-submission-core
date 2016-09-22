@@ -105,11 +105,10 @@ public class Sample {
     }
 
     // Bean
-    private String description;
+    private String description = null;
     private Map<Integer, DataEntry> dataEntries;
 
     public Sample() {
-        description = "";
         dataEntries = new HashMap<>();
     }
 
