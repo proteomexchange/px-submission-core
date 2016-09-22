@@ -40,6 +40,7 @@ public class QuickMetaDataParserState extends MetaDataParserState {
                 new QuickMzTabSampleDiseaseLineItemParsingHandler(),
                 new QuickMzTabSampleSpeciesLineItemParsingHandler(),
                 new QuickMzTabSampleTissueLineItemParsingHandler(),
+                new QuickMzTabSampleDescriptionLineItemParsingHandler(),
                 new QuickMzTabProteinSearchEngineScoreLineItemParsingHandler(),
                 new QuickMzTabPeptideSearchEngineScoreLineItemParsingHandler(),
                 new QuickMzTabPsmSearchEngineScoreLineItemParsingHandler(),
