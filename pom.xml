@@ -28,16 +28,6 @@
 
     <developers>
         <developer>
-            <id>rwang</id>
-            <name>Rui Wang</name>
-            <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
-            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>0</timezone>
-        </developer>
-        <developer>
             <id>tobias</id>
             <name>Tobias Ternent</name>
             <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
@@ -45,7 +35,7 @@
             <roles>
                 <role>developer</role>
             </roles>
-            <timezone>0</timezone>
+            <timezone>Europe/London</timezone>
         </developer>
         <developer>
             <id>mbernal</id>
@@ -58,6 +48,19 @@
             <timezone>0</timezone>
         </developer>
     </developers>
+
+    <contributors>
+        <contributor>
+            <id>rwang</id>
+            <name>Rui Wang</name>
+            <organization>Proteomics Services Team, PANDA Group, EMBL-European Bioinformatics Institute</organization>
+            <organizationUrl>http://www.ebi.ac.uk/pride</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/London</timezone>
+        </contributor>
+    </contributors>
 
     <properties>
         <!-- archive data provider api dependency -->
