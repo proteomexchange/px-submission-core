@@ -54,7 +54,7 @@
         <!-- Logging capabilities -->
         <uk.ac.ebi.pride.architectural-pride-logging.version>1.0.0</uk.ac.ebi.pride.architectural-pride-logging.version>
         <!-- TDD -->
-        <uk.ac.ebi.pride.architectural-pride-tdd.version>1.0.1</uk.ac.ebi.pride.architectural-pride-tdd.version>
+        <uk.ac.ebi.pride.architectural-pride-tdd.version>1.0.3</uk.ac.ebi.pride.architectural-pride-tdd.version>
         <!-- archive data provider api dependency -->
         <uk.ac.ebi.pride.archive-archive-data-provider-api.version>2.0.7</uk.ac.ebi.pride.archive-archive-data-provider-api.version>
     </properties>
