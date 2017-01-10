@@ -166,11 +166,13 @@ public final class SubmissionValidator {
     }
 
     /**
-     * Validate a single sample metadata entry
+     * Validates a single sample metadata entry
+     * @param dataFile input data file.
+     * @param experimentalFactorOptional true if the experimental factor is optional, false otherwise.
+     * @return the validation report about sample metadata.
      */
     public static ValidationReport validateSampleMetaDataEntry(DataFile dataFile, boolean experimentalFactorOptional) {
         ValidationReport report = new ValidationReport();
-
         if (dataFile.getFileType().equals(ProjectFileType.RESULT)) {
             SampleMetaData sampleMetaDataEntry = dataFile.getSampleMetaData();
             report.combine(validateSpecies(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.SPECIES)))
@@ -179,26 +181,20 @@ public final class SubmissionValidator {
                     .combine(validateDiseases(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.DISEASE)))
                     .combine(validateInstruments(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.INSTRUMENT)))
                     .combine(validateQuantifications(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD)));
-
-
-            if (!experimentalFactorOptional) {
-                Set<CvParam> experimentalFactor = sampleMetaDataEntry.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR);
-                if (experimentalFactor == null || experimentalFactor.isEmpty()) {
+            Set<CvParam> experimentalFactor = sampleMetaDataEntry.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR);
+            if (experimentalFactor == null || experimentalFactor.isEmpty()) {
+                if (!experimentalFactorOptional) {
                     report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Experimental factor cannot be empty: " + dataFile.getFileId()));
-                } else {
-                    report.combine(validateExperimentalFactor(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR).iterator().next().getValue()));
                 }
+            } else {
+                report.combine(validateExperimentalFactor(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR).iterator().next().getValue()));
             }
-
         } else {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Sample metadata entry must have a matching result file: " + dataFile.getFileId()));
         }
-
-
         if (!report.hasError() && !report.hasWarning()) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Sample metadata entry is valid: " + dataFile.getFileId()));
         }
-
         return report;
     }
 
@@ -679,17 +675,18 @@ public final class SubmissionValidator {
     }
 
     /**
-     * Validate experimental factor
+     * Validates experimental factor
+     *
+     * @param expFactor the input experimental factor.
+     * @return the validation report about success or error.
      */
     public static ValidationReport validateExperimentalFactor(String expFactor) {
         ValidationReport report = new ValidationReport();
-
         if (isValidShortString(expFactor)) {
-            report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Experimental factor must be less than " + Constant.MAXIMUM_SHORT_STRING_LENGTH + " characters"));
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Experimental factor is valid"));
         } else {
-            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Experimental factor is invalid"));
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Experimental factor must be less than " + Constant.MAXIMUM_SHORT_STRING_LENGTH + " characters"));
         }
-
         return report;
     }
 
