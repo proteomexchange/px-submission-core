@@ -1,5 +1,6 @@
 package uk.ac.ebi.pride.data.validation;
 
+import com.google.common.base.CharMatcher;
 import uk.ac.ebi.pride.data.model.*;
 import uk.ac.ebi.pride.data.util.Constant;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
@@ -744,6 +745,22 @@ public final class SubmissionValidator {
                 } else if (actualFile.length() <= 0) {
                     report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Data file is empty: " + actualFile.getAbsolutePath()));
                 }
+                // Check that the file name is portable
+                if (!CharMatcher.ASCII.matchesAllOf(dataFile.getFileName())) {
+                    // Not all characters in the file name are part of the ASCII standard
+                    // NOTE - This artifact is used by the px-submission-tool (and probably no one else), where strings
+                    // used in messages, specially those used on the GUI, have been externalized to a configuration
+                    // file, but not getting to the point of "internationalization". In the case of this artifact,
+                    // pretty much all the strings are hard coded... hurray!
+                    // WARNING - I know this check is not very strict, and it's not picky in terms of checking that for
+                    // the file name a subset of the POSIX definition of "portable character set"
+                    // (https://en.wikipedia.org/wiki/Portable_character_set) has been used in a strict way, but that's
+                    // because, when you reach this point, it means the file name can be used in a PATH, as the file can
+                    // be opened and read, i.e. it already is compatible with at least one file system, now we just need
+                    // to check that the characters that have been used to write the file name, are part of ASCII
+                    // charset.
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "NON-STANDARD CHARSET used in file name '" + actualFile.getName() + "'"));
+                }
             } else if (!dataFile.isUrl()) {
                 // Accept URL
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Data file is not a file: " + dataFile.getFileId()));
@@ -753,7 +770,6 @@ public final class SubmissionValidator {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Data file is valid: " + dataFile.getFileId()));
             }
         }
-        // TODO - Check that the file name is portable
     }
 
 
