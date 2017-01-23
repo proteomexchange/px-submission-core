@@ -718,7 +718,7 @@ public final class SubmissionValidator {
     /**
      * Validate data file
      * <p/>
-     * NOTE: here we check file existence and file read permission
+     * NOTE: here we check file existence and file read permission, AND, we also check that the file name is portable
      */
     public static ValidationReport validateDataFile(DataFile dataFile) {
         ValidationReport report = new ValidationReport();
@@ -753,6 +753,7 @@ public final class SubmissionValidator {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Data file is valid: " + dataFile.getFileId()));
             }
         }
+        // TODO - Check that the file name is portable
     }
 
 
