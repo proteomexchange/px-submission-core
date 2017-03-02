@@ -21,8 +21,8 @@ import java.util.zip.ZipFile;
  */
 public enum MassSpecFileFormat {
     MGF("mgf", true, ProjectFileType.PEAK),
-    MZML("mzml", true, ProjectFileType.RAW),
-    INDEXED_MZML("mzml", true, ProjectFileType.RAW),
+    MZML("mzml", true, ProjectFileType.PEAK),
+    INDEXED_MZML("mzml", true, ProjectFileType.PEAK),
     MZIDENTML("mzid", true, ProjectFileType.RESULT),
     PRIDE("xml", true, ProjectFileType.RESULT),
     DAT("dat", true, ProjectFileType.SEARCH),
@@ -42,7 +42,7 @@ public enum MassSpecFileFormat {
     VEMS_PKX("pkx", true, ProjectFileType.RAW),
     MS2("ms2", true, ProjectFileType.PEAK),
     MZDATA("mzdata", true, ProjectFileType.RAW),
-    MZXML("mzxml", true, ProjectFileType.RAW),
+    MZXML("mzxml", true, ProjectFileType.PEAK),
     BRUKER_BAF("baf", true, ProjectFileType.RAW),
     BRUKER_FID("fid", true, ProjectFileType.RAW),
     BRUKER_YEP("yep", true, ProjectFileType.RAW),
