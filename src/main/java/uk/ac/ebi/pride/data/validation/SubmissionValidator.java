@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.archive.dataprovider.project.SubmissionType;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -31,9 +32,8 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateSubmission(Submission submission) {
         ValidationReport report = validateSubmissionSyntax(submission);
-
         report.combine(validateDataFiles(submission.getDataFiles()));
-
+        report.combine(validateUnreportedFiles(submission.getDataFiles()));
         return report;
     }
 
@@ -708,12 +708,44 @@ public final class SubmissionValidator {
 
     public static ValidationReport validateDataFiles(Collection<DataFile> dataFiles) {
         ValidationReport report = new ValidationReport();
-
         for (DataFile dataFile : dataFiles) {
             report.combine(validateDataFile(dataFile));
         }
-
         return report;
+    }
+
+    public static ValidationReport validateUnreportedFiles(Collection<DataFile> dataFiles) {
+        ValidationReport report = new ValidationReport();
+        Set<String> parentDirectories = new HashSet<>();
+        Set<String> allDataFiles = new HashSet<>();
+        for (DataFile dataFile : dataFiles) {
+            parentDirectories.add(dataFile.getFile().getParentFile().getPath());
+            allDataFiles.add(dataFile.getFile().getName());
+        }
+        Set<String> allChildFilenames = new HashSet<>();
+        for (String parentDirectory : parentDirectories) {
+            File parentDirectoryFile = new File(parentDirectory);
+            for (File childFile : parentDirectoryFile.listFiles()) {
+                allChildFilenames.add(childFile.getName());
+            }
+        }
+        for (String childFilename : allChildFilenames) {
+            if (fileMissing(allDataFiles, childFilename)) {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Unreported file found in submission directory: " + childFilename));
+            }
+        }
+        return report;
+    }
+
+    private static boolean fileMissing(Set<String> filePaths, String toCheck) {
+        boolean result = true;
+        for (String filePath : filePaths) {
+            if (filePath.equalsIgnoreCase(toCheck)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
