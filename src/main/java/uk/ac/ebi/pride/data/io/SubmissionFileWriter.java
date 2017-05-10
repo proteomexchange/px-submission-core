@@ -96,7 +96,7 @@ public final class SubmissionFileWriter {
       writeProjectMetaData(writer, Constant.REANALYSIS_PX_ACCESSION, projectMetaData.getReanalysisAccessions(), false);
     }
     if (projectMetaData.hasRpxdOriginalPxAccessions()) {
-      writeProjectMetaData(writer, Constant.REANALYSIS_PX_ACCESSION, projectMetaData.getRpxdOriginalAccessions(), false);
+      writeProjectMetaData(writer, Constant.RPXD_ORIGINAL_ACCESSION, projectMetaData.getRpxdOriginalAccessions(), false);
     }
     if (projectMetaData.hasAdditional()) {
       writeProjectMetaData(writer, Constant.ADDITIONAL, projectMetaData.getAdditional(), false);
