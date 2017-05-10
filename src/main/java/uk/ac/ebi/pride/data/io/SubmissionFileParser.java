@@ -68,22 +68,13 @@ public class SubmissionFileParser {
     public static void parse(Submission submission, File file) throws SubmissionFileException {
         BufferedReader reader = null;
         try {
-            // File reader
             reader = new BufferedReader(new FileReader(file));
-            // each line from the file
             String line;
-            // store all metadata
-            List<String[]> metadata = new ArrayList<String[]>();
-            // store file mapping headers
+            List<String[]> metadata = new ArrayList<>();
             String[] fileMappingHeaders = null;
-            // store all file mappings
-            List<String[]> fileMappings = new ArrayList<String[]>();
-            // store sample metadata headers
+            List<String[]> fileMappings = new ArrayList<>();
             String[] sampleMetadataHeaders = null;
-            // store sample metadata
-            List<String[]> sampleMetadata = new ArrayList<String[]>();
-
-
+            List<String[]> sampleMetadata = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if (line.trim().length() > 0) {
                     String[] parts = line.split(Constant.TAB, -1);
@@ -92,22 +83,17 @@ public class SubmissionFileParser {
                         String msg = "The MetaData section of the submission file must have three tab-separated parts: " + line;
                         throw new SubmissionFileException(msg);
                     }
-
                     // check the content type
                     boolean isMetaData = Constant.METADATA_HEADER.equals(parts[0]);
                     boolean isFileMapping = Constant.FILE_MAPPING_HEADER.equals(parts[0]) || Constant.FILE_MAPPING_ENTRY.equals(parts[0]);
                     boolean isSampleMetadata = Constant.SAMPLE_METADATA_HEADER.equals(parts[0]) || Constant.SAMPLE_METADATA_ENTRY.equals(parts[0]);
-
-                    // check whether it is a valid file format
-                    if (!isMetaData && !isFileMapping && !isSampleMetadata) {
+                    if (!isMetaData && !isFileMapping && !isSampleMetadata) { // check whether it is a valid file format
                         String msg = "Unrecognised submission file section: " + file.getAbsolutePath();
                         logger.error(msg);
                         throw new SubmissionFileException(msg);
                     }
-
                     // process the file content
                     if (isMetaData) {
-                        // metadata
                         if (length >= MIN_METADATA_ENTRIES) {
                             metadata.add(parts);
                         } else {
@@ -115,7 +101,6 @@ public class SubmissionFileParser {
                             throw new SubmissionFileException(msg);
                         }
                     } else if (isFileMapping) {
-                        // file mappings
                         if (length >= MIN_FILE_MAPPING_ENTRIES) {
                             if (Constant.FILE_MAPPING_HEADER.equals(parts[0])) {
                                 fileMappingHeaders = parts;
@@ -127,7 +112,6 @@ public class SubmissionFileParser {
                             throw new SubmissionFileException(msg);
                         }
                     } else if (isSampleMetadata) {
-                        // sample metadata
                         if (length >= MIN_SAMPLE_METADATA_ENTRIES) {
                             if (Constant.SAMPLE_METADATA_HEADER.equals(parts[0])) {
                                 sampleMetadataHeaders = parts;
@@ -141,16 +125,9 @@ public class SubmissionFileParser {
                     }
                 }
             }
-
-            // parse project metadata
             parseProjectMetadata(submission, metadata);
-
-            // parse file mappings
             parseFileMapping(submission, fileMappingHeaders, fileMappings);
-
-            // parse sample metadata
             parseSampleMetadata(submission, sampleMetadataHeaders, sampleMetadata);
-
         } catch (FileNotFoundException e) {
             String msg = "Failed to find submission file: " + file.getAbsolutePath();
             logger.error(msg, e);
@@ -177,67 +154,44 @@ public class SubmissionFileParser {
      * @param metadata   metadata entries
      */
     private static void parseProjectMetadata(Submission submission, List<String[]> metadata) {
-
-        // get metadata
         ProjectMetaData projectMetaData = submission.getProjectMetaData();
         projectMetaData.setSubmitterContact(new Contact());
-
         for (String[] entry : metadata) {
-            // save meta data
             String type = entry[1];
             String value = entry[2].trim();
             Contact submitterContact = projectMetaData.getSubmitterContact();
             Contact labHeadContact = projectMetaData.getLabHeadContact();
             if (Constant.SUBMITTER_NAME.equalsIgnoreCase(type) || Constant.LEGACY_SUBMITTER_NAME.equalsIgnoreCase(type)) {
-                // first name
                 submitterContact.setName(value);
             } else if (Constant.SUBMITTER_EMAIL.equalsIgnoreCase(type) || Constant.LEGACY_SUBMITTER_EMAIL.equalsIgnoreCase(type)) {
-                // email
                 submitterContact.setEmail(value);
             } else if (Constant.SUBMITTER_AFFILIATION.equalsIgnoreCase(type) || Constant.LEGACY_SUBMITTER_AFFILIATION.equalsIgnoreCase(type)) {
-                // affiliation
                 submitterContact.setAffiliation(value);
             } else if (Constant.SUBMITTER_USER_NAME.equalsIgnoreCase(type) || Constant.LEGACY_SUBMITTER_USER_NAME.equalsIgnoreCase(type)) {
-                // pride user
                 submitterContact.setUserName(value);
             } else if (Constant.LAB_HEAD_NAME.equalsIgnoreCase(type)) {
-                // first name
                 labHeadContact.setName(value);
             } else if (Constant.LAB_HEAD_EMAIL.equalsIgnoreCase(type)) {
-                // email
                 labHeadContact.setEmail(value);
             } else if (Constant.LAB_HEAD_AFFILIATION.equalsIgnoreCase(type)) {
-                // affiliation
                 labHeadContact.setAffiliation(value);
-            } else if (Constant.SUBMITTER_USER_NAME.equalsIgnoreCase(type) || Constant.LEGACY_SUBMITTER_USER_NAME.equalsIgnoreCase(type)) {
-                // pride user
-                submitterContact.setUserName(value);
             } else if (Constant.PROJECT_TITLE.equalsIgnoreCase(type)  || Constant.LEGACY_PROJECT_TITLE.equalsIgnoreCase(type)) {
-                // title
                 projectMetaData.setProjectTitle(value);
             } else if (Constant.PROJECT_DESC.equalsIgnoreCase(type) || Constant.LEGACY_PROJECT_DESC.equalsIgnoreCase(type)) {
-                // experiment description
                 projectMetaData.setProjectDescription(value);
             } else if (Constant.PROJECT_TAG.equalsIgnoreCase(type)) {
-                // species
                 projectMetaData.addProjectTags(value);
             } else if (Constant.KEYWORDS.equalsIgnoreCase(type)) {
-                // keywords
                 projectMetaData.setKeywords(value);
             } else if (Constant.SAMPLE_PROCESSING_PROTOCOL.equalsIgnoreCase(type)) {
-                // sample processing protocol
                 projectMetaData.setSampleProcessingProtocol(value);
             } else if (Constant.DATA_PROCESSING_PROTOCOL.equalsIgnoreCase(type)) {
-                // data processing protocol
                 projectMetaData.setDataProcessingProtocol(value);
             } else if (Constant.OTHER_OMICS_LINK.equalsIgnoreCase(type)) {
-                // other omics link
                 projectMetaData.setOtherOmicsLink(value);
             } else if (Constant.EXPERIMENT_TYPE.equalsIgnoreCase(type)) {
-                // experiment type
                 projectMetaData.addMassSpecExperimentMethods(createCvParam(value));
             } else if (Constant.SUBMISSION_TYPE.equalsIgnoreCase(type) || Constant.LEGACY_SUBMISSION_TYPE.equalsIgnoreCase(type)) {
-                // submission type
                 if (SubmissionType.COMPLETE.toString().equalsIgnoreCase(value) || Constant.LEGACY_SUPPORTED_SUBMISSION.equalsIgnoreCase(value)) {
                     projectMetaData.setSubmissionType(SubmissionType.COMPLETE);
                 } else if (SubmissionType.PARTIAL.toString().equalsIgnoreCase(value) || Constant.LEGACY_UNSUPPORTED_SUBMISSION.equalsIgnoreCase(value)) {
@@ -248,42 +202,33 @@ public class SubmissionFileParser {
                     projectMetaData.setSubmissionType(SubmissionType.PRIDE);
                 }
             } else if (Constant.REASON_FOR_PARTIAL.equalsIgnoreCase(type) || Constant.LEGACY_REASON_FOR_PARTIAL.equalsIgnoreCase(type)) {
-                // reason for partial submission
                 projectMetaData.setReasonForPartialSubmission(value);
             } else if (Constant.SPECIES.equalsIgnoreCase(type)) {
-                // species
                 projectMetaData.addSpecies(createCvParam(value));
             } else if (Constant.TISSUE.equalsIgnoreCase(type)) {
-                // species
                 projectMetaData.addTissues(createCvParam(value));
             } else if (Constant.CELL_TYPE.equalsIgnoreCase(type)) {
-                // species
                 projectMetaData.addCellTypes(createCvParam(value));
             } else if (Constant.DISEASE.equalsIgnoreCase(type)) {
-                // species
                 projectMetaData.addDiseases(createCvParam(value));
             } else if (Constant.INSTRUMENT.equalsIgnoreCase(type)) {
-                // instrument
                 projectMetaData.addInstruments(createCvParam(value));
             } else if (Constant.MODIFICATION.equalsIgnoreCase(type)) {
-                // modification
                 projectMetaData.addModifications(createCvParam(value));
             } else if (Constant.QUANTIFICATION.equalsIgnoreCase(type)) {
-                // modification
                 projectMetaData.addQuantifications(createCvParam(value));
             } else if (Constant.ADDITIONAL.equalsIgnoreCase(type)) {
-                // additional
                 projectMetaData.addAdditional(createParam(value));
             } else if (Constant.PUBMED_ID.equalsIgnoreCase(type)) {
-                // pubmed ids
                 projectMetaData.addPubmedIds(value);
             } else if (Constant.DOI.equalsIgnoreCase(type)) {
-                // DOIs
                 projectMetaData.addDois(value);
-            }else if (Constant.RESUBMISSION_PX_ACCESSION.equalsIgnoreCase(type)) {
+            } else if (Constant.RESUBMISSION_PX_ACCESSION.equalsIgnoreCase(type)) {
                 projectMetaData.setResubmissionPxAccession(value);
             } else if (Constant.REANALYSIS_PX_ACCESSION.equalsIgnoreCase(type)) {
                 projectMetaData.addReanalysisPxAccessions(value);
+            } else if (Constant.RPXD_ORIGINAL_ACCESSION.equalsIgnoreCase(type)) {
+                projectMetaData.addRpxdOriginalPxAccessions(value);
             }
         }
     }
@@ -298,47 +243,30 @@ public class SubmissionFileParser {
      *          exception wihle parsing the input file
      */
     private static void parseFileMapping(Submission submission, String[] headers, List<String[]> entries) throws SubmissionFileException {
-        // create all the objects and mappings
-
-        // map to store the mapping between file id and data file object
-        Map<Integer, DataFile> fileMap = new LinkedHashMap<Integer, DataFile>();
-
-        // map to store the mapping between files
-        Map<Integer, List<Integer>> idMap = new HashMap<Integer, List<Integer>>();
-
-        // get the index of all the values
-        int idIndex = -1, typeIndex = -1, pathIndex = -1, mappingIndex = -1, prideAccIndex = -1, urlIndex = -1;
+        Map<Integer, DataFile> fileObjectsMappings = new LinkedHashMap<>();
+        Map<Integer, List<Integer>> fileIdMappings = new HashMap<>();
+        int idIndex = -1, typeIndex = -1, pathIndex = -1, mappingIndex = -1, prideAccIndex = -1, urlIndex = -1, rpxdOriginalAccessionIndex = -1;
         for (int i = 0; i < headers.length; i++) {
             String header = headers[i].trim();
             if (Constant.FILE_ID.equalsIgnoreCase(header)) {
-                // file id
                 idIndex = i;
             } else if (Constant.FILE_TYPE.equalsIgnoreCase(header)) {
-                // file type
                 typeIndex = i;
             } else if (Constant.FILE_PATH.equalsIgnoreCase(header)) {
-                // file path
                 pathIndex = i;
             } else if (Constant.FILE_MAPPING.equalsIgnoreCase(header)) {
-                // file mapping
                 mappingIndex = i;
             } else if (Constant.PRIDE_ACCESSION.equalsIgnoreCase(header)) {
-                // pride accession
                 prideAccIndex = i;
             }  else if (Constant.URL.equalsIgnoreCase(header)) {
-                // url
                 urlIndex = i;
+            } else if (Constant.RPXD_ORIGINAL_ACCESSION.equalsIgnoreCase(header)) {
+                rpxdOriginalAccessionIndex = i;
             }
         }
-
-        // create all data file objects
         for (String[] entry : entries) {
-            // validate the file id
             String idStr = entry[idIndex].trim();
-
             int id = Integer.parseInt(idStr);
-
-            // file or url object
             String path = entry[pathIndex].trim();
             URL url = null;
             File file = null;
@@ -354,49 +282,46 @@ public class SubmissionFileParser {
                     logger.error("Malformed URL, continuing anyway: " + urlIndex);
                 }
             }
-
-            // validate the file type
             String fileType = entry[typeIndex].trim();
             ProjectFileType type = ProjectFileType.fromString(fileType);
             if (type == null) {
                 throw new SubmissionFileException("Invalid file type: " + fileType);
             }
-
-            // pride accession, this is optional
-            String prideAccession = null;
-            if (prideAccIndex != -1 && entry.length > prideAccIndex) {
+            String prideAccession = null; // optional
+            if (prideAccIndex != -1 && prideAccIndex < entry.length) {
                 prideAccession = entry[prideAccIndex].trim();
             }
-
-            // create data file object
-            DataFile dataFile = new DataFile(id, file, url, type, new ArrayList<DataFile>(), prideAccession);
-            fileMap.put(id, dataFile);
-
-            // mappings
+            String rpxdOriginalAccession = null; // optional
+            if (rpxdOriginalAccessionIndex > -1 && rpxdOriginalAccessionIndex < entry.length &&
+                entry[rpxdOriginalAccessionIndex]!=null && !entry[rpxdOriginalAccessionIndex].trim().isEmpty()) {
+                rpxdOriginalAccession = entry[rpxdOriginalAccessionIndex].trim();
+                if (!submission.getProjectMetaData().hasRpxdPriginalPxAccession(rpxdOriginalAccession)) {
+                    submission.getProjectMetaData().addRpxdOriginalPxAccessions(rpxdOriginalAccession);
+                }
+            }
+            DataFile dataFile = new DataFile(id, file, url, type, new ArrayList<>(), prideAccession, rpxdOriginalAccession);
+            fileObjectsMappings.put(id, dataFile);
             if (entry.length > mappingIndex) {
                 String mappingStr = entry[mappingIndex].trim();
                 if (mappingStr.length() > 0) {
                     String[] parts = mappingStr.split(Constant.COMMA);
-                    List<Integer> idList = new ArrayList<Integer>();
-                    idMap.put(id, idList);
+                    List<Integer> idList = new ArrayList<>();
+                    fileIdMappings.put(id, idList);
                     for (String part : parts) {
                         if (isNonNegativeInteger(part)) {
                             idList.add(new Integer(part.trim()));
                         } else {
-                            throw new SubmissionFileException("Invalid file id, must be none negative integer: " + part);
+                            throw new SubmissionFileException("Invalid file id, must be non-negative integer: " + part);
                         }
                     }
                 }
             }
         }
-
-
-        // populate all the file mappings
-        for (Integer id : idMap.keySet()) {
-            DataFile dataFile = fileMap.get(id);
-            List<Integer> idMappings = idMap.get(id);
+        for (Integer id : fileIdMappings.keySet()) {
+            DataFile dataFile = fileObjectsMappings.get(id);
+            List<Integer> idMappings = fileIdMappings.get(id);
             for (Integer idMapping : idMappings) {
-                DataFile mappedDataFile = fileMap.get(idMapping);
+                DataFile mappedDataFile = fileObjectsMappings.get(idMapping);
                 if (mappedDataFile != null) {
                     dataFile.addFileMapping(mappedDataFile);
                 } else {
@@ -404,9 +329,7 @@ public class SubmissionFileParser {
                 }
             }
         }
-
-        // add all the data files
-        submission.addDataFiles(fileMap.values());
+        submission.addDataFiles(fileObjectsMappings.values());
     }
 
     /**
@@ -434,10 +357,7 @@ public class SubmissionFileParser {
         if (string == null || string.trim().isEmpty()) {
             return false;
         }
-
-        // trim the string
         String trimmedString = string.trim();
-
         int i = 0;
         if (trimmedString.charAt(0) == '-') {
             if (trimmedString.length() > 1) {
@@ -446,21 +366,17 @@ public class SubmissionFileParser {
                 return false;
             }
         }
-
         for (; i < trimmedString.length(); i++) {
             char c = trimmedString.charAt(i);
-
             if (!Character.isDigit(c)) {
                 return false;
             }
         }
-
         try {
             Integer.parseInt(trimmedString);
         } catch (Exception ex) {
             return false;
         }
-
         return true;
     }
 
@@ -472,18 +388,14 @@ public class SubmissionFileParser {
      * @param entries    sample metadata
      */
     private static void parseSampleMetadata(Submission submission, String[] headers, List<String[]> entries) throws SubmissionFileException {
-        // create all data file objects
         for (String[] entry : entries) {
-            // create a new sample metadata
             SampleMetaData sampleMetaDataEntry = new SampleMetaData();
             DataFile dataFile = null;
             int fileId = -1;
-
             for (int i = 0; i < headers.length; i++) {
                 String value = entry[i].trim();
                 if (value.length() > 0) {
                     String header = headers[i].trim();
-
                     if (Constant.FILE_ID.equalsIgnoreCase(header)) {
                         fileId = Integer.parseInt(value);
                         dataFile = submission.getDataFileById(fileId);
@@ -507,11 +419,9 @@ public class SubmissionFileParser {
                     }
                 }
             }
-
             if (dataFile == null) {
                 throw new SubmissionFileException("Failed to find data file for sample metadata, file id: " + fileId);
             }
-
             dataFile.setSampleMetaData(sampleMetaDataEntry);
         }
     }
@@ -524,14 +434,12 @@ public class SubmissionFileParser {
         String parts[] = str.split(Constant.COMMA + "\\" + Constant.PARAM_START);
         Set<Param> params = new LinkedHashSet<Param>();
         params.add(createParam(parts[0]));
-
         if (parts.length > 1) {
             for (int i = 1; i < parts.length; i++) {
                 String part = parts[i];
                 params.add(createParam(Constant.PARAM_START + part));
             }
         }
-
         return params;
     }
 
@@ -543,14 +451,12 @@ public class SubmissionFileParser {
         String parts[] = str.split(Constant.COMMA + "\\" + Constant.PARAM_START);
         Set<CvParam> cvParams = new LinkedHashSet<CvParam>();
         cvParams.add(createCvParam(parts[0]));
-
         if (parts.length > 1) {
             for (int i = 1; i < parts.length; i++) {
                 String part = parts[i];
                 cvParams.add(createCvParam(Constant.PARAM_START + part));
             }
         }
-
         return cvParams;
     }
 
@@ -561,7 +467,6 @@ public class SubmissionFileParser {
         str = str.trim();
         str = str.substring(1);
         str = str.substring(0, str.length() - 1);
-
         String[] parts = str.split(",", -1);
         return new CvParam(parts[0].trim(), parts[1].trim(), parts[2].trim(), ("".equals(parts[3].trim()) ? null : parts[3].trim()));
     }
@@ -573,7 +478,6 @@ public class SubmissionFileParser {
         str = str.trim();
         str = str.substring(1);
         str = str.substring(0, str.length() - 1);
-
         String[] parts = str.split(",", -1);
         if ("".equals(parts[0].trim())) {
             return new Param(parts[2].trim(), ("".equals(parts[3].trim()) ? null : parts[3].trim()));
@@ -584,6 +488,6 @@ public class SubmissionFileParser {
 
     public static void main(String[] args) throws SubmissionFileException {
         Submission submission = SubmissionFileParser.parse(new File(args[0]));
-        System.out.println("Submission summary file parsed successfully");
+        logger.info("Submission summary file parsed successfully: " + submission.toString());
     }
 }

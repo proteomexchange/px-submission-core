@@ -118,6 +118,8 @@ public class Constant {
 
     public static final String URL = "url";
 
+    public static final String RPXD_ORIGINAL_ACCESSION = "rpxd_original_accession";
+
     public static final int MINIMUM_STRING_LENGTH = 50;
 
     public static final int MAXIMUM_SHORT_STRING_LENGTH = 500;
@@ -185,6 +187,8 @@ public class Constant {
     public static final Pattern DOI_PATTERN = Pattern.compile("^10\\.\\d+/");
 
     public static final Pattern PX_PATTERN = Pattern.compile("^PXD\\d{6}");
+
+    public static final Pattern RPX_PATTERN = Pattern.compile("^RPXD\\d{6}");
 
     public static final Pattern PRIDE_PATTERN = Pattern.compile("^PRD\\d{6}");
 

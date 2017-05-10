@@ -1,0 +1,46 @@
+MTD	submitter_name	 John Arthur Smith
+MTD	submitter_email	john.smith@cam.edu
+MTD	submitter_affiliation	University of Cambridge
+MTD	submitter_pride_login	john.smith@cam.edu
+MTD	lab_head_name	 Alice Wonderland
+MTD	lab_head_email	alice.wonderland@cam.edu
+MTD	lab_head_affiliation	University of Newcastle
+MTD	project_title	Human proteome
+MTD	project_description	An experiment about human proteome An experiment about human proteome An experiment about human proteome
+MTD	project_tag	Human proteome project
+MTD	sample_processing_protocol	sample processing protocol sample processing protocol sample processing protocol sample processing protocol
+MTD	data_processing_protocol	 data processing protocol data processing protocol data processing protocol data processing protocol
+MTD	other_omics_link	http://www.ebi.ac.uk
+MTD	keywords	human, proteome
+MTD	experiment_type	[PRIDE, PRIDE:1000448, MS1,]
+MTD	submission_type	complete
+MTD	species	[NEWT,9606,Human,]
+MTD	species	[NEWT,741158,Homo sp. Altai,]
+MTD	tissue	[BTO,BTO:0000142,brain,]
+MTD	cell_type	[CL,CL:0000236,B cell,]
+MTD	disease	[DOID, DOID:1319, brain cancer,]
+MTD	instrument	[MS,MS:1000447,LTQ,]
+MTD	quantification	[PRIDE, PRIDE:00199, label free,]
+MTD	pubmed_id	12345
+MTD	pubmed_id	23456
+MTD	rpxd_original_accession	PXD000004
+MTD	rpxd_original_accession	PXD000005
+MTD	rpxd_original_accession	PXD000006
+MTD	additional	[,,Additional param name,additional param value]
+
+FMH	file_id	file_type	file_path	file_mapping	rpxd_original_accession
+FME	1	result	/path/to/pride/xml/files/pride-1.xml	7,8,9	
+FME	2	result	/path/to/pride/xml/files/pride-2.xml	4	
+FME	3	result	/path/to/mzidentml/files/mzidentml-1.xml	5,10	
+FME	4	raw	/path/to/raw/files/raw-1.bin		PXD000004
+FME	5	raw	/path/to/raw/files/raw-2.bin		PXD000005
+FME	6	raw	/path/to/raw/files/raw-3.bin		PXD000006
+FME	7	raw	ftp://some.url/at/some/place/raw-4.bin		PXD000006
+FME	8	search	/path/to/search/engine/output/search-1.out		
+FME	9	other	/path/to/other/file/other-1.e		
+FME	10	peak	/path/to/peak/list/mzml-1.xml		
+
+SMH	file_id	species	tissue	cell_type	disease	instrument	quantification	experimental_factor
+SME	1	[NEWT,9606,Human,],[NEWT,741158,Homo sp. Altai,]	[BTO,BTO:0000142,brain,]	[CL,CL:0000236,B cell,]	[DOID, DOID:1319, brain cancer,]	[MS,MS:1000447,LTQ,]	[PRIDE, PRIDE:00199, label free,]	first experimental factor
+SME	2	[NEWT,9606,Human,]	[BTO,BTO:0000142,brain,]			[MS,MS:1000447,LTQ,]		second experimental factor
+SME	3	[NEWT,9606,Human,]	[BTO,BTO:0000142,brain,]			[MS,MS:1000447,LTQ,]		third experimental factor
