@@ -204,7 +204,6 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateContact(Contact contact) {
         ValidationReport report = new ValidationReport();
-
         if (contact == null) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Contact cannot be empty"));
         } else {
@@ -213,7 +212,6 @@ public final class SubmissionValidator {
                     .combine(validateAffiliation(contact.getAffiliation()))
                     .combine(validateUserName(contact.getUserName()));
         }
-
         return report;
     }
 
@@ -222,13 +220,16 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateName(String name) {
         ValidationReport report = new ValidationReport();
-
-        if (noneEmptyString(name)) {
-            report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Submitter name is valid: " + name));
-        } else {
+        if (!noneEmptyString(name)) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Submitter name is empty"));
+        } else {
+            String trimmedName = name.trim();
+            if (trimmedName.length()>0 && trimmedName.contains(" ")) {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Submitter name is valid: " + name));
+            } else {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Submitter name must have a space"));
+            }
         }
-
         return report;
     }
 
@@ -257,13 +258,15 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateAffiliation(String affiliation) {
         ValidationReport report = new ValidationReport();
-
-        if (noneEmptyString(affiliation)) {
-            report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Affiliation is valid"));
-        } else {
+        if (!noneEmptyString(affiliation)) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Affiliation cannot be empty"));
+        } else {
+            if (affiliation.length()<=500) {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Affiliation is valid"));
+            } else{
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Affiliation must be <500 characters"));
+            }
         }
-
         return report;
     }
 

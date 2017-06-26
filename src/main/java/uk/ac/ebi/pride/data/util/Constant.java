@@ -178,7 +178,7 @@ public class Constant {
     /**
      * This section contains all the regular expressions
      */
-    public static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w\\-]+(\\.[\\w\\-]+)*@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$");
+    public static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w\\-]+(\\.[\\w\\-]+)*@([A-Za-z0-9-]+\\.)+[A-Za-z]+$");
 
     public static final Pattern PUBMED_PATTERN = Pattern.compile("^\\d+$");
 
