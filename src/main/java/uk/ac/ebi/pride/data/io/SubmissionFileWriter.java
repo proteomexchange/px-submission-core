@@ -208,50 +208,30 @@ public final class SubmissionFileWriter {
      * Write a single sample metadata entry
      */
     private static void writeSampleMetaDataEntry(PrintWriter writer, int fileId, SampleMetaData metaData) {
-        // species
-        String species = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.SPECIES)) {
-            species = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.SPECIES).toArray());
-        }
-
-        // tissue
-        String tissues = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.TISSUE)) {
-            tissues = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.TISSUE).toArray());
-        }
-
-        // cell type
-        String cellTypes = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.CELL_TYPE)) {
-            cellTypes = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.CELL_TYPE).toArray());
-        }
-
-        // disease
-        String diseases = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.DISEASE)) {
-            diseases = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.DISEASE).toArray());
-        }
-
-        // modification
-        String modification = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.MODIFICATION)) {
-            modification = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.MODIFICATION).toArray());
-        }
-
-        // instrument
-        String instruments = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.INSTRUMENT)) {
-            instruments = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.INSTRUMENT).toArray());
-        }
-
-        // quantification
-        String quantifications = "";
-        if (metaData.hasMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD)) {
-            quantifications = castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD).toArray());
-        }
-
-        String experimentalFactor = metaData.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR).iterator().next().getValue();
-
+        String species = metaData.hasMetaData(SampleMetaData.Type.SPECIES) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.SPECIES).toArray()) :
+            "";
+        String tissues = metaData.hasMetaData(SampleMetaData.Type.TISSUE) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.TISSUE).toArray()) :
+            "";
+        String cellTypes = metaData.hasMetaData(SampleMetaData.Type.CELL_TYPE) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.CELL_TYPE).toArray()) :
+            "";
+        String diseases = metaData.hasMetaData(SampleMetaData.Type.DISEASE) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.DISEASE).toArray()) :
+            "";
+        String modification = metaData.hasMetaData(SampleMetaData.Type.MODIFICATION) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.MODIFICATION).toArray()) :
+            "";
+        String instruments = metaData.hasMetaData(SampleMetaData.Type.INSTRUMENT) ?
+            castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.INSTRUMENT).toArray()) :
+            "";
+        String quantifications = metaData.hasMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD) ?
+             castToString(Constant.COMMA, metaData.getMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD).toArray()) :
+            "";
+        String experimentalFactor = metaData.hasMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR) ?
+            metaData.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR).iterator().next().getValue() :
+            "";
         writer.println(castToString(Constant.TAB, Constant.SAMPLE_METADATA_ENTRY,
                 fileId, species,
                 tissues, cellTypes, diseases, modification,
