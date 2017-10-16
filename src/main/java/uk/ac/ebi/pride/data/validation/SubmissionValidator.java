@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.archive.dataprovider.project.SubmissionType;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -31,9 +32,7 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateSubmission(Submission submission) {
         ValidationReport report = validateSubmissionSyntax(submission);
-
         report.combine(validateDataFiles(submission.getDataFiles()));
-
         return report;
     }
 
@@ -43,11 +42,9 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateSubmissionSyntax(Submission submission) {
         ValidationReport report = new ValidationReport();
-
         report.combine(validateProjectMetaData(submission.getProjectMetaData()))
                 .combine(validateFileMappings(submission))
                 .combine(validateSampleMetaData(submission, false));
-
         return report;
     }
 
@@ -56,7 +53,6 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateProjectMetaData(ProjectMetaData projectMetaData) {
         ValidationReport report = new ValidationReport();
-
         if (projectMetaData == null) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project metadata cannot be empty"));
         } else {
@@ -85,27 +81,24 @@ public final class SubmissionValidator {
                     .combine(validateQuantifications(projectMetaData.getQuantifications()))
                     .combine(validateReasonForPartialSubmission(projectMetaData.getReasonForPartialSubmission(), submissionType));
         }
-
         return report;
     }
 
     /**
-     * Validate file mappings
-     * NOTE: here we only make sure that a file is indeed a file, not a folder
+     * Validates the file mappings.
+     * @param submission the input Submission object to check.
+     * @return a ValidationReport with any reported errors.
      */
     public static ValidationReport validateFileMappings(Submission submission) {
         ValidationReport report = new ValidationReport();
-
         List<DataFile> dataFiles = submission.getDataFiles();
         SubmissionType submissionType = submission.getProjectMetaData().getSubmissionType();
-
         if (dataFiles == null) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Data files cannot be empty"));
         } else {
             boolean resultPresent = SubmissionType.RAW.equals(submissionType);
             boolean searchPresent = false;
             boolean rawFilePresent = false;
-
             for (DataFile dataFile : dataFiles) {
                 if ((SubmissionType.COMPLETE.equals(submissionType) && ProjectFileType.RESULT.equals(dataFile.getFileType())) ||
                         (SubmissionType.PARTIAL.equals(submissionType) && ProjectFileType.SEARCH.equals(dataFile.getFileType()))) {
@@ -122,24 +115,49 @@ public final class SubmissionValidator {
                     rawFilePresent = true;
                 }
             }
-
-            if (!rawFilePresent) {
-                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Raw files not found"));
-            }
-
-            if (!resultPresent) {
-                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Result files not found"));
-            }
-
-            if (!searchPresent) {
-                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Search files not found"));
+            if (!rawFilePresent || !resultPresent || !searchPresent) {
+                if (!rawFilePresent) {
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Raw files not found"));
+                }
+                if (!resultPresent) {
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Result files not found"));
+                }
+                if (!searchPresent) {
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Search files not found"));
+                }
+            } else { // check for result/search files w/o mappings to raw files, and raw files that have not been mapped
+                int resultOrSearchCount = 0;
+                List<DataFile> resultOrSearchFiles = SubmissionType.COMPLETE.equals(submissionType) ?
+                    submission.getDataFileByType(ProjectFileType.RESULT) :
+                    submission.getDataFileByType(ProjectFileType.SEARCH);
+                Set<DataFile> foundMappedRawFiles = new HashSet<>();
+                Set<DataFile> allRawFiles = new HashSet<>(submission.getDataFileByType(ProjectFileType.RAW));
+                for (DataFile resultOrSearchFile : resultOrSearchFiles) {
+                    if (resultOrSearchFile.getFileMappings().isEmpty() || !resultOrSearchFile.hasRawMappings()) {
+                        resultOrSearchCount++;
+                    } else if (!resultOrSearchFile.getFileMappings().isEmpty() && resultOrSearchFile.hasRawMappings()) {
+                        List<DataFile> fileMappings = resultOrSearchFile.getFileMappings();
+                        for (DataFile dataFile : fileMappings) {
+                            if (ProjectFileType.RAW.equals(dataFile.getFileType())) {
+                                foundMappedRawFiles.add(dataFile);
+                            }
+                        }
+                    }
+                }
+                if (0<resultOrSearchCount) {
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR,
+                        ((SubmissionType.COMPLETE.equals(submissionType)) ? "Result"
+                            : "Search") + " file is not mapped to at least 1 'raw' file."));
+                } else if (!allRawFiles.equals(foundMappedRawFiles)) {
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "At least 1 raw file has not been mapped to a " +
+                        ((SubmissionType.COMPLETE.equals(submissionType)) ? "'result'"
+                            : "'search'") + " file"));
+                }
             }
         }
-
         if (!report.hasError() && !report.hasWarning()) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Data files are valid"));
         }
-
         return report;
     }
 
@@ -148,7 +166,6 @@ public final class SubmissionValidator {
      */
     public static ValidationReport validateSampleMetaData(Submission submission, boolean experimentalFactorOptional) {
         ValidationReport report = new ValidationReport();
-
         List<DataFile> dataFiles = submission.getDataFiles();
         for (DataFile dataFile : dataFiles) {
             SampleMetaData sampleMetaData = dataFile.getSampleMetaData();
@@ -158,11 +175,9 @@ public final class SubmissionValidator {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "None result file should not contain sample metadata, file Id: " + dataFile.getFileId()));
             }
         }
-
         if (!report.hasError() && !report.hasWarning()) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Sample metadata is valid"));
         }
-
         return report;
     }
 
