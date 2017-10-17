@@ -25,7 +25,7 @@ public class SubmissionValidatorPartialSubmissionTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = SubmissionFileParser.class.getClassLoader().getResource("submissionFileUnsupported.px");
+        URL url = SubmissionFileParser.class.getClassLoader().getResource("partialSubmissionFile.px");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
@@ -101,6 +101,16 @@ public class SubmissionValidatorPartialSubmissionTest {
         Submission submission = SubmissionFileParser.parse(inputFile);
         assertEquals(true, SubmissionValidator.validateFileMappings(submission).hasError());
         assertEquals(false, SubmissionValidator.validateFileMappings(submission).hasSuccess());
+    }
+
+    @Test
+    public void fileMappingsAreInvalid() throws Exception {
+        URL url = SubmissionFileParser.class.getClassLoader().getResource("badPartialSubmissionFile.px");
+        if (url == null) {
+            throw new IllegalStateException("no file for input found!");
+        }
+        Submission submission = SubmissionFileParser.parse(new File(url.toURI()));
+        assertEquals(true, SubmissionValidator.validateFileMappings(submission).hasError());
     }
 
     @Test

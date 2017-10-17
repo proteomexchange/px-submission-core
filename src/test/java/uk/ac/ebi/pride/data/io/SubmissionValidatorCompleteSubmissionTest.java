@@ -48,6 +48,18 @@ public class SubmissionValidatorCompleteSubmissionTest {
     }
 
     @Test
+    public void fileMappingsAreInvalid() throws Exception {
+        URL url = SubmissionFileParser.class.getClassLoader().getResource("badCompleteSubmissionFile.px");
+        if (url == null) {
+            throw new IllegalStateException("no file for input found!");
+        }
+        Submission submission = SubmissionFileParser.parse(new File(url.toURI()));
+        ValidationReport report = SubmissionValidator.validateFileMappings(submission);
+        assertEquals(true, report.hasSuccess());
+        assertEquals(false, report.hasError());
+    }
+
+    @Test
     public void sampleMetadataIsValid() throws Exception {
         Submission submission = SubmissionFileParser.parse(inputFile);
         ValidationReport report = SubmissionValidator.validateSampleMetaData(submission, false);

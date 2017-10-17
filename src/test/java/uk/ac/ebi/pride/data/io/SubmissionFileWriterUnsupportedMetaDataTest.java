@@ -32,7 +32,7 @@ public class SubmissionFileWriterUnsupportedMetaDataTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = SubmissionFileWriterSupportedMetaDataTest.class.getClassLoader().getResource("submissionFileUnsupported.px");
+        URL url = SubmissionFileWriterSupportedMetaDataTest.class.getClassLoader().getResource("partialSubmissionFile.px");
         submission = SubmissionFileParser.parse(new File(url.toURI()));
         newSubmissionFile = new File(temporaryFolder.getRoot().getAbsolutePath() + File.separator + "submission.px");
     }

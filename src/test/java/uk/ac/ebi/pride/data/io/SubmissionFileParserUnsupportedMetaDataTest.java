@@ -25,7 +25,7 @@ public class SubmissionFileParserUnsupportedMetaDataTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = SubmissionFileParser.class.getClassLoader().getResource("submissionFileUnsupported.px");
+        URL url = SubmissionFileParser.class.getClassLoader().getResource("partialSubmissionFile.px");
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
         }
