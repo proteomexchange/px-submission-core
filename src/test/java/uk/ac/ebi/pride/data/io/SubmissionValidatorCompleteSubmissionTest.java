@@ -55,8 +55,8 @@ public class SubmissionValidatorCompleteSubmissionTest {
         }
         Submission submission = SubmissionFileParser.parse(new File(url.toURI()));
         ValidationReport report = SubmissionValidator.validateFileMappings(submission);
-        assertEquals(true, report.hasSuccess());
-        assertEquals(false, report.hasError());
+        assertEquals(false, report.hasSuccess());
+        assertEquals(true, report.hasError());
     }
 
     @Test
