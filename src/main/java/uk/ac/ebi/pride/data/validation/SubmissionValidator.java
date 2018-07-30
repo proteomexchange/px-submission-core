@@ -155,6 +155,7 @@ public final class SubmissionValidator {
                 }
             }
         }
+        // cyclic referencing is early detected while parsing the file instead of checking here, to minimize the performance hit
         if (!report.hasError() && !report.hasWarning()) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Data files are valid"));
         }

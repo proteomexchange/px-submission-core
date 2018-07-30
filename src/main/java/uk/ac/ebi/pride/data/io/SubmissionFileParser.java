@@ -405,8 +405,44 @@ public class SubmissionFileParser {
             }
         }
 
+        // looking for cyclic referencing  issues
+        isCyclicReferencesExists(idMap);
+
         // add all the data files
         submission.addDataFiles(fileMap.values());
+    }
+
+    /**
+     * This method checks if there are cyclic referencing in the px summary file.
+     *
+     * Cyclic referencing means, for example, File ID 1 mapped to ID 2, then for File ID 2, it was being mapped to ID 1.
+     * This shouldn't be the case, files shouldn't be related to each other, because then it causes a cyclic relationship.
+     * cyclic dependency may course problems when generating the README.txt file (during publication)
+     * @param idMap a map with file ID and their related file IDs
+     * @return Boolean value - true if a cyclic dependency found
+     */
+    private static boolean isCyclicReferencesExists(Map<Integer, List<Integer>> idMap){
+        boolean isCyclicRefFound = false;
+        try {
+            for (Map.Entry<Integer, List<Integer>> file : idMap.entrySet())
+            {
+                for (Integer reference : file.getValue()) {
+                    if(idMap.containsKey(reference)) {
+                        if(idMap.get(reference).contains(file.getKey())) {
+                            isCyclicRefFound = true;
+                            StringBuilder errorMsg = new StringBuilder();
+                            errorMsg.append("Cyclic Reference found at file " + file.getKey() + " and " +  reference + "\n");
+                            errorMsg.append(file.getKey() + "--->" + file.getValue().toString() + "\n");
+                            errorMsg.append(reference +  "--->" + idMap.get(reference).toString() + "\n");
+                            throw new Exception(errorMsg.toString());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isCyclicRefFound;
     }
 
     /**
