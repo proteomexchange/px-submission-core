@@ -780,6 +780,9 @@ public final class SubmissionValidator {
                     // charset.
                     report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "NON-STANDARD CHARSET used in file name '" + actualFile.getName() + "'"));
                 }
+                if (!dataFile.getFileName().matches("[^-_.A-Za-z0-9]")){
+                    report.addMessage(new ValidationMessage(ValidationMessage.Type.WARNING, "POSIX compatible charset is NOT used in file name '" + actualFile.getName() + "'"));
+                }
             } else if (!dataFile.isUrl()) {
                 // Accept URL
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Data file is not a file: " + dataFile.getFileId()));

@@ -79,5 +79,11 @@ public class SubmissionValidatorCompleteSubmissionTest {
         assertEquals(true, validationReport.hasWarning());
     }
 
+    @Test
+    public void isValidFIle() throws Exception {
+        Submission submission = SubmissionFileParser.parse(inputFile);
+        ValidationReport report = SubmissionValidator.validateSubmission(submission);
+        assertEquals(true, report.hasSuccess());
+    }
 
 }
