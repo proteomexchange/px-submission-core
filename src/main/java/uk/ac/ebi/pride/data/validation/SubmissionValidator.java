@@ -323,10 +323,10 @@ public final class SubmissionValidator {
     public static ValidationReport validateProjectTile(String title) {
         ValidationReport report = new ValidationReport();
 
-        if (isValidShortString(title)) {
+        if (isValidProjectTitle(title)) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Project title is valid"));
         } else {
-            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project title must be less than " + Constant.MAXIMUM_SHORT_STRING_LENGTH + " characters"));
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project title must be less than " + Constant.MAXIMUM_SHORT_STRING_LENGTH + " and less than " + Constant.MINIMUM_SHORT_STRING_LENGTH + " characters"));
         }
 
         return report;
@@ -874,6 +874,16 @@ public final class SubmissionValidator {
      */
     private static boolean isValidShortString(String str) {
         return noneEmptyString(str) && str.length() < Constant.MAXIMUM_SHORT_STRING_LENGTH;
+    }
+
+    /**
+     * Validate project Title
+     *
+     * @param str string to be validated
+     * @return boolean true means valid
+     */
+    private static boolean isValidProjectTitle(String str) {
+        return noneEmptyString(str) && str.length() < Constant.MAXIMUM_SHORT_STRING_LENGTH && str.length() > Constant.MINIMUM_SHORT_STRING_LENGTH;
     }
 
     /**

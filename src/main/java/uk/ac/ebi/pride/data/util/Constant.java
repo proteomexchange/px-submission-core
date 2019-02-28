@@ -120,6 +120,8 @@ public class Constant {
 
     public static final int MINIMUM_STRING_LENGTH = 50;
 
+    public static final int MINIMUM_SHORT_STRING_LENGTH = 30;
+
     public static final int MAXIMUM_SHORT_STRING_LENGTH = 500;
 
     public static final int MAXIMUM_MEDIUM_STRING_LENGTH = 500;
