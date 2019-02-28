@@ -55,7 +55,7 @@ public class SubmissionFileParserUnsupportedMetaDataTest {
 
     @Test
     public void testExpTitle() throws Exception {
-        assertEquals("Human proteome", submission.getProjectMetaData().getProjectTitle());
+        assertEquals("Human proteome An experiment about human proteome An experiment about human proteome An experiment about human proteome", submission.getProjectMetaData().getProjectTitle());
     }
 
     @Test
