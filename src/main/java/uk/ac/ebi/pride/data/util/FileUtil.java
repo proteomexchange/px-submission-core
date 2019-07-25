@@ -31,6 +31,12 @@ public final class FileUtil {
         String fileNameExt = null;
         if (mid > 0) {
             fileNameExt = fileName.substring(mid + 1, fileName.length()).toLowerCase();
+        }else{
+            try {
+                throw new FileNotFoundException(fileName + " does not have an file extension!");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         return fileNameExt;
