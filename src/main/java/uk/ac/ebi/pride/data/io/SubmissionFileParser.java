@@ -97,9 +97,10 @@ public class SubmissionFileParser {
                     boolean isMetaData = Constant.METADATA_HEADER.equals(parts[0]);
                     boolean isFileMapping = Constant.FILE_MAPPING_HEADER.equals(parts[0]) || Constant.FILE_MAPPING_ENTRY.equals(parts[0]);
                     boolean isSampleMetadata = Constant.SAMPLE_METADATA_HEADER.equals(parts[0]) || Constant.SAMPLE_METADATA_ENTRY.equals(parts[0]);
+                    boolean isCommentData = Constant.COMMENT_ENTRY.equals(parts[0]);
 
                     // check whether it is a valid file format
-                    if (!isMetaData && !isFileMapping && !isSampleMetadata) {
+                    if (!isMetaData && !isFileMapping && !isSampleMetadata && !isCommentData) {
                         String msg = "Unrecognised submission file section: " + file.getAbsolutePath();
                         logger.error(msg);
                         throw new SubmissionFileException(msg);
