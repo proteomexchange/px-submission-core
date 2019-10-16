@@ -510,45 +510,51 @@ public class SubmissionFileParser {
      */
     private static void parseSampleMetadata(Submission submission, String[] headers, List<String[]> entries) throws SubmissionFileException {
         // create all data file objects
-        for (String[] entry : entries) {
+        for (int index = 0; index < entries.size(); index++) {
+            String[] entry = entries.get(index);
+
+
             // create a new sample metadata
             SampleMetaData sampleMetaDataEntry = new SampleMetaData();
             DataFile dataFile = null;
             int fileId = -1;
+            try {
+                for (int i = 0; i < headers.length; i++) {
+                    String value = entry[i].trim();
+                    if (value.length() > 0) {
+                        String header = headers[i].trim();
 
-            for (int i = 0; i < headers.length; i++) {
-                String value = entry[i].trim();
-                if (value.length() > 0) {
-                    String header = headers[i].trim();
-
-                    if (Constant.FILE_ID.equalsIgnoreCase(header)) {
-                        fileId = Integer.parseInt(value);
-                        dataFile = submission.getDataFileById(fileId);
-                    } else if (Constant.SPECIES.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.SPECIES, createMultipleCvParams(value));
-                    } else if (Constant.TISSUE.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.TISSUE, createMultipleCvParams(value));
-                    } else if (Constant.DISEASE.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.DISEASE, createMultipleCvParams(value));
-                    } else if (Constant.CELL_TYPE.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.CELL_TYPE, createMultipleCvParams(value));
-                    } else if (Constant.MODIFICATION.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.MODIFICATION, createMultipleCvParams(value));
-                    } else if (Constant.INSTRUMENT.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.INSTRUMENT, createMultipleCvParams(value));
-                    } else if (Constant.QUANTIFICATION.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.setMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD, createMultipleCvParams(value));
-                    } else if (Constant.EXPERIMENTAL_FACTOR.equalsIgnoreCase(header)) {
-                        sampleMetaDataEntry.addMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR,
-                                ExperimentalFactorUtil.getExperimentalFactorCvParam(value));
+                        if (Constant.FILE_ID.equalsIgnoreCase(header)) {
+                            fileId = Integer.parseInt(value);
+                            dataFile = submission.getDataFileById(fileId);
+                        } else if (Constant.SPECIES.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.SPECIES, createMultipleCvParams(value));
+                        } else if (Constant.TISSUE.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.TISSUE, createMultipleCvParams(value));
+                        } else if (Constant.DISEASE.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.DISEASE, createMultipleCvParams(value));
+                        } else if (Constant.CELL_TYPE.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.CELL_TYPE, createMultipleCvParams(value));
+                        } else if (Constant.MODIFICATION.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.MODIFICATION, createMultipleCvParams(value));
+                        } else if (Constant.INSTRUMENT.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.INSTRUMENT, createMultipleCvParams(value));
+                        } else if (Constant.QUANTIFICATION.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.setMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD, createMultipleCvParams(value));
+                        } else if (Constant.EXPERIMENTAL_FACTOR.equalsIgnoreCase(header)) {
+                            sampleMetaDataEntry.addMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR,
+                                    ExperimentalFactorUtil.getExperimentalFactorCvParam(value));
+                        }
                     }
                 }
+            } catch (Exception e) {
+                System.out.println(Arrays.toString( entries.get(index)));
+                e.printStackTrace();
             }
 
             if (dataFile == null) {
                 throw new SubmissionFileException("Failed to find data file for sample metadata, file id: " + fileId);
             }
-
             dataFile.setSampleMetaData(sampleMetaDataEntry);
         }
     }
@@ -595,12 +601,25 @@ public class SubmissionFileParser {
      * Create a CvParam based on a given string
      */
     private static CvParam createCvParam(String str) {
+        CvParam cvParam = null;
+
         str = str.trim();
         str = str.substring(1);
         str = str.substring(0, str.length() - 1);
 
         String[] parts = str.split(",", -1);
-        return new CvParam(parts[0].trim(), parts[1].trim(), parts[2].trim(), ("".equals(parts[3].trim()) ? null : parts[3].trim()));
+        if(parts.length != 4){ // all the cv parameters should have four sections
+            System.err.println("CV param should contain four sections: [cvLabel,accession,name,value]. But we found : " + Arrays.toString(parts));
+        }
+
+        String cvLabel = parts[0].trim();
+        String accession = parts[1].trim();
+        String name = parts[2].trim();
+        String value = ("".equals(parts[3].trim())) ? null : parts[3].trim();
+
+        cvParam = new CvParam(cvLabel, accession, name, value);
+
+        return cvParam;
     }
 
     /**
@@ -612,6 +631,9 @@ public class SubmissionFileParser {
         str = str.substring(0, str.length() - 1);
 
         String[] parts = str.split(",", -1);
+        if(parts.length != 4){ // all the cv parameters should have four sections
+            System.err.println("Param should contain four sections: [cvLabel,accession,name,value]. But we found : " + Arrays.toString(parts));
+        }
         if ("".equals(parts[0].trim())) {
             return new Param(parts[2].trim(), ("".equals(parts[3].trim()) ? null : parts[3].trim()));
         } else {
