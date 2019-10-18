@@ -16,6 +16,8 @@ public class Constant {
     /**
      * This section is used for submission file input/output purpose
      */
+    public static final String COMMENT_ENTRY = "COM";
+
     public static final String METADATA_HEADER = "MTD";
 
     public static final String FILE_MAPPING_HEADER = "FMH";
