@@ -280,7 +280,7 @@ public enum MassSpecFileFormat {
                 format = checkFormatByExtension(fileExtension);
             }
         } catch (ZipException ze) {
-            // unable to extract zip file, perhaps has nested directories or too large in size
+            System.err.println("Unable to extract zip file, perhaps has nested directories or too large in size.");
             format = null;
         } finally {
             if (zipFile != null) {
@@ -339,6 +339,7 @@ public enum MassSpecFileFormat {
                 format = detectFormat(content);
             }
         } catch (ZipException ze) {
+            System.err.println("Unable to extract zip file, perhaps has nested directories or too large in size.");
             // unable to extract zip file, perhaps has nested directories or too large in size
             format = null;
         } finally {
