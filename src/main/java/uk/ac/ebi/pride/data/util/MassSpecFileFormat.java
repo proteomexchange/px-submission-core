@@ -268,6 +268,10 @@ public enum MassSpecFileFormat {
     private static MassSpecFileFormat checkZippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format = null;
 
+        if(file.getName().trim().toLowerCase().endsWith("raw.zip")){
+            return MassSpecFileFormat.RAW;
+        }
+
         ZipFile zipFile = null;
         try {
             zipFile = new ZipFile(file);
@@ -280,7 +284,7 @@ public enum MassSpecFileFormat {
                 format = checkFormatByExtension(fileExtension);
             }
         } catch (ZipException ze) {
-            System.err.println("Unable to extract zip file, perhaps has nested directories or too large in size.");
+            System.err.println("Unable to extract zip file to check file extension, perhaps has nested directories or too large in size.");
             format = null;
         } finally {
             if (zipFile != null) {
@@ -339,8 +343,7 @@ public enum MassSpecFileFormat {
                 format = detectFormat(content);
             }
         } catch (ZipException ze) {
-            System.err.println("Unable to extract zip file, perhaps has nested directories or too large in size.");
-            // unable to extract zip file, perhaps has nested directories or too large in size
+            System.err.println("Unable to extract zip file to check content, perhaps has nested directories or too large in size.");
             format = null;
         } finally {
             if (zipFile != null) {
@@ -384,6 +387,10 @@ public enum MassSpecFileFormat {
     private static MassSpecFileFormat checkGzippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format;
 
+        if(file.getName().trim().toLowerCase().endsWith("raw.gzip")){
+            return MassSpecFileFormat.RAW;
+        }
+
         String fileName = file.getName();
         fileName = fileName.substring(0, fileName.length() - 3);
         String fileExtension = FileUtil.getFileExtension(fileName);
@@ -416,6 +423,8 @@ public enum MassSpecFileFormat {
             String content = new String(data);
             format = detectFormat(content);
 
+        } catch (Exception ex) {
+            System.err.println("Unable to read gzip file to check content: " + ex.getMessage());
         } finally {
             if (gzipInputStream != null) {
                 gzipInputStream.close();
