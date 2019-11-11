@@ -61,7 +61,9 @@ public enum MassSpecFileFormat {
     SPECTRAST("xls", true, ProjectFileType.SEARCH),
     TIF("tif", true, ProjectFileType.GEL),
     VEMS_PKX("pkx", true, ProjectFileType.RAW),
-    XTANDEM("xml", true, ProjectFileType.SEARCH);
+    XTANDEM("xml", true, ProjectFileType.SEARCH),
+    CSV("csv", true, ProjectFileType.SEARCH),
+    TSV("tsv", true, ProjectFileType.SEARCH);
 
 
     private String fileExtension;
