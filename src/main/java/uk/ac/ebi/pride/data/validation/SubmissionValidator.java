@@ -77,7 +77,7 @@ public final class SubmissionValidator {
                     .combine(validateCellTypes(projectMetaData.getCellTypes()))
                     .combine(validateDiseases(projectMetaData.getDiseases()))
                     .combine(validateInstruments(projectMetaData.getInstruments()))
-                    .combine(validateModifications(projectMetaData.getModifications(), submissionType))
+                    .combine(validateModifications(projectMetaData.getModifications()))
                     .combine(validateQuantifications(projectMetaData.getQuantifications()))
                     .combine(validateReasonForPartialSubmission(projectMetaData.getReasonForPartialSubmission(), submissionType));
         }
@@ -197,6 +197,7 @@ public final class SubmissionValidator {
                     .combine(validateCellTypes(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.CELL_TYPE)))
                     .combine(validateDiseases(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.DISEASE)))
                     .combine(validateInstruments(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.INSTRUMENT)))
+                    .combine(validateModifications(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.MODIFICATION)))
                     .combine(validateQuantifications(sampleMetaDataEntry.getMetaData(SampleMetaData.Type.QUANTIFICATION_METHOD)));
             Set<CvParam> experimentalFactor = sampleMetaDataEntry.getMetaData(SampleMetaData.Type.EXPERIMENTAL_FACTOR);
             if (experimentalFactor == null || experimentalFactor.isEmpty()) {
@@ -644,11 +645,11 @@ public final class SubmissionValidator {
     /**
      * Validate modifications
      */
-    public static ValidationReport validateModifications(Set<CvParam> mods, SubmissionType submissionType) {
+    public static ValidationReport validateModifications(Set<CvParam> mods) {
         ValidationReport report = new ValidationReport();
 
         if (mods == null || mods.isEmpty()) {
-            report.addMessage(new ValidationMessage(submissionType.equals(SubmissionType.PARTIAL) ? ValidationMessage.Type.ERROR : ValidationMessage.Type.WARNING, "Modifications cannot be empty"));
+            report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Modifications cannot be empty"));
         } else {
             for (CvParam mod : mods) {
                 String cvLabel = mod.getCvLabel();

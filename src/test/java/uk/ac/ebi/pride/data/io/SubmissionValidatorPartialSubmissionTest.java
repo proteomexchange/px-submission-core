@@ -83,8 +83,8 @@ public class SubmissionValidatorPartialSubmissionTest {
         Set<CvParam> modifications = submission.getProjectMetaData().getModifications();
         modifications.iterator().next().setCvLabel("TEST");
         SubmissionType submissionType = submission.getProjectMetaData().getSubmissionType();
-        assertEquals(true, SubmissionValidator.validateModifications(modifications, submissionType).hasError());
-        assertEquals(false, SubmissionValidator.validateModifications(modifications, submissionType).hasSuccess());
+        assertEquals(true, SubmissionValidator.validateModifications(modifications).hasError());
+        assertEquals(false, SubmissionValidator.validateModifications(modifications).hasSuccess());
     }
 
     @Test
@@ -119,8 +119,8 @@ public class SubmissionValidatorPartialSubmissionTest {
         Set<CvParam> modifications = submission.getProjectMetaData().getModifications();
         modifications.clear();
         SubmissionType submissionType = submission.getProjectMetaData().getSubmissionType();
-        assertEquals(true, SubmissionValidator.validateModifications(modifications, submissionType).hasError());
-        assertEquals(false, SubmissionValidator.validateModifications(modifications, submissionType).hasSuccess());
+        assertEquals(true, SubmissionValidator.validateModifications(modifications).hasError());
+        assertEquals(false, SubmissionValidator.validateModifications(modifications).hasSuccess());
     }
 
     @Test

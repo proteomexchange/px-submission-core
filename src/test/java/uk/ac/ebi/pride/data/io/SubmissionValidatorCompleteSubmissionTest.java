@@ -68,15 +68,14 @@ public class SubmissionValidatorCompleteSubmissionTest {
     }
 
     @Test
-    public void modificationIsOptional() throws Exception {
+    public void modificationIsMandatory() throws Exception {
         Submission submission = SubmissionFileParser.parse(inputFile);
         Set<CvParam> modifications = submission.getProjectMetaData().getModifications();
         modifications.clear();
         SubmissionType submissionType = submission.getProjectMetaData().getSubmissionType();
-        ValidationReport validationReport = SubmissionValidator.validateModifications(modifications, submissionType);
-        assertEquals(false, validationReport.hasError());
+        ValidationReport validationReport = SubmissionValidator.validateModifications(modifications);
+        assertEquals(true, validationReport.hasError());
         assertEquals(false, validationReport.hasSuccess());
-        assertEquals(true, validationReport.hasWarning());
     }
 
     @Test
