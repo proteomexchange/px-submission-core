@@ -63,7 +63,9 @@ public enum MassSpecFileFormat {
     VEMS_PKX("pkx", true, ProjectFileType.RAW),
     XTANDEM("xml", true, ProjectFileType.SEARCH),
     CSV("csv", true, ProjectFileType.SEARCH),
-    TSV("tsv", true, ProjectFileType.SEARCH);
+    TSV("tsv", true, ProjectFileType.SEARCH),
+    EXPERIMENTAL_DESIGN_TSV("tsv",true,ProjectFileType.EXPERIMENTAL_DESIGN),
+    EXPERIMENTAL_DESIGN_TXT("txt",true,ProjectFileType.EXPERIMENTAL_DESIGN);
 
 
     private String fileExtension;
@@ -116,7 +118,7 @@ public enum MassSpecFileFormat {
     public static ProjectFileType getType(File file) throws IOException {
         MassSpecFileFormat format = checkFormat(file);
 
-        return format == null ? ProjectFileType.OTHER : format.getFileType();
+            return format == null ? ProjectFileType.OTHER : format.getFileType();
     }
 
     /**
@@ -166,9 +168,11 @@ public enum MassSpecFileFormat {
             } else if ("mzml".equalsIgnoreCase(ext)) {
                 // NOTE - Why checkFormatByExtension is not being used for this particular format?
                 format = file.exists() ? checkXmlFileContent(file) : MZML;
-            } else if ("txt".equalsIgnoreCase(ext)) {
-                // TODO - Shouldn't we look at the content of the file?
-                format = null;
+            } else if ("tsv".equalsIgnoreCase(ext) ){
+                format = file.getName().contains("sdrf") ? EXPERIMENTAL_DESIGN_TSV : checkFormatByExtension(ext);
+            }
+            else if ("txt".equalsIgnoreCase(ext)) {
+                format = file.getName().contains("sdrf") ? EXPERIMENTAL_DESIGN_TSV : null;
             } else if ("xls".equalsIgnoreCase(ext)) {
                 format = null;
             } else {
@@ -184,7 +188,7 @@ public enum MassSpecFileFormat {
     /**
      * Detect file format by detecting file extension
      *
-     * @param ext    extension of a given file or folder
+     * @param ext extension of a given file or folder
      * @return MassSpecFileFormat  mass spec file format
      */
     private static MassSpecFileFormat checkFormatByExtension(String ext) {
@@ -201,8 +205,8 @@ public enum MassSpecFileFormat {
     /**
      * Check the file format of a xml file
      *
-     * @param file  input xml file
-     * @return  file format
+     * @param file input xml file
+     * @return file format
      * @throws IOException
      */
     private static MassSpecFileFormat checkXmlFile(File file) throws IOException {
@@ -270,7 +274,7 @@ public enum MassSpecFileFormat {
     private static MassSpecFileFormat checkZippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format = null;
 
-        if(file.getName().trim().toLowerCase().endsWith("raw.zip")){
+        if (file.getName().trim().toLowerCase().endsWith("raw.zip")) {
             return MassSpecFileFormat.RAW;
         }
 
@@ -368,9 +372,9 @@ public enum MassSpecFileFormat {
      */
     private static MassSpecFileFormat checkGzippedFile(File file) throws IOException {
         MassSpecFileFormat fileFormat = checkGzippedFileExtension(file);
- 
+
         if (fileFormat != null && fileFormat.equals(MassSpecFileFormat.MZML) && file.exists()) {
-        	fileFormat = checkGzippedFileContent(file);
+            fileFormat = checkGzippedFileContent(file);
         }
         if (fileFormat == null && file.exists() && !FileUtil.isFileEmpty(file)) {
             fileFormat = checkGzippedFileContent(file);
@@ -389,7 +393,7 @@ public enum MassSpecFileFormat {
     private static MassSpecFileFormat checkGzippedFileExtension(File file) throws IOException {
         MassSpecFileFormat format;
 
-        if(file.getName().trim().toLowerCase().endsWith("raw.gzip")){
+        if (file.getName().trim().toLowerCase().endsWith("raw.gzip")) {
             return MassSpecFileFormat.RAW;
         }
 
