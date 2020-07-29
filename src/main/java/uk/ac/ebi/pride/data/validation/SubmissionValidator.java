@@ -291,10 +291,12 @@ public final class SubmissionValidator {
         ValidationReport report = new ValidationReport();
 
         for (String projectTag : projectTags) {
-            if (noneEmptyString(projectTag)) {
-                report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Project tag is valid: " + projectTag));
-            } else {
+            if (!noneEmptyString(projectTag)) {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag cannot be empty"));
+            } else if(projectTag.contains(",")) {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag cannot contain commas. Multiple tags should report in multiple entries"));
+            }else {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Project tag is valid: " + projectTag));
             }
         }
 
