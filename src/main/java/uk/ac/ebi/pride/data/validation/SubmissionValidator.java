@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.archive.dataprovider.project.SubmissionType;
 import uk.ac.ebi.pride.data.util.ValidateAnnotationFiles;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -32,8 +33,14 @@ public final class SubmissionValidator {
      * Full validation, also checks the existence and access permissions of the data files
      */
     public static ValidationReport validateSubmission(Submission submission) {
-        ValidationReport report = validateSubmissionSyntax(submission);
-        report.combine(validateDataFiles(submission.getDataFiles()));
+        ValidationReport report = null;
+        try {
+            report = validateSubmissionSyntax(submission);
+            report.combine(validateDataFiles(submission.getDataFiles()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         return report;
     }
 
@@ -41,7 +48,7 @@ public final class SubmissionValidator {
      * Validate only submission file schema, this doesn't check the existence and access permissions of the
      * data files
      */
-    public static ValidationReport validateSubmissionSyntax(Submission submission) {
+    public static ValidationReport validateSubmissionSyntax(Submission submission) throws IOException {
         ValidationReport report = new ValidationReport();
         report.combine(validateProjectMetaData(submission.getProjectMetaData()))
                 .combine(validateFileMappings(submission))
@@ -52,7 +59,7 @@ public final class SubmissionValidator {
     /**
      * Validate project metadata
      */
-    public static ValidationReport validateProjectMetaData(ProjectMetaData projectMetaData) {
+    public static ValidationReport validateProjectMetaData(ProjectMetaData projectMetaData) throws IOException {
         ValidationReport report = new ValidationReport();
         if (projectMetaData == null) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project metadata cannot be empty"));
@@ -288,7 +295,7 @@ public final class SubmissionValidator {
         return report;
     }
 
-    private static ValidationReport validateProjectTags(Set<String> projectTags) {
+    private static ValidationReport validateProjectTags(Set<String> projectTags) throws IOException {
         ValidationReport report = new ValidationReport();
 
         for (String projectTag : projectTags) {
@@ -297,7 +304,7 @@ public final class SubmissionValidator {
             } else if(projectTag.contains(",")) {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag cannot contain commas. Multiple tags should report in multiple entries"));
             }else if(!ValidateAnnotationFiles.getValidProjectTags().contains(projectTag)) {
-                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag is not valid. " + projectTag + " is not in annotation config file"));
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag is not valid. " + projectTag + " does not match with permitted tags at: " + Constant.PROJECT_TAG_FILE + ". New tags are accepted by Pull Requests."));
             }else {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Project tag is valid: " + projectTag));
             }
