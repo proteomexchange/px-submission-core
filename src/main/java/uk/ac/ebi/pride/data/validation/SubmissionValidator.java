@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.data.model.*;
 import uk.ac.ebi.pride.data.util.Constant;
 import uk.ac.ebi.pride.archive.dataprovider.file.ProjectFileType;
 import uk.ac.ebi.pride.archive.dataprovider.project.SubmissionType;
+import uk.ac.ebi.pride.data.util.ValidateAnnotationFiles;
 
 import java.io.File;
 import java.util.Collection;
@@ -295,6 +296,8 @@ public final class SubmissionValidator {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag cannot be empty"));
             } else if(projectTag.contains(",")) {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag cannot contain commas. Multiple tags should report in multiple entries"));
+            }else if(!ValidateAnnotationFiles.getValidProjectTags().contains(projectTag)) {
+                report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Project tag is not valid. " + projectTag + " is not in annotation config file"));
             }else {
                 report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Project tag is valid: " + projectTag));
             }
