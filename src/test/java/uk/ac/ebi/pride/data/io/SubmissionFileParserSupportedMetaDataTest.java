@@ -81,7 +81,7 @@ public class SubmissionFileParserSupportedMetaDataTest {
     @Test
     public void testProjectTags() throws Exception {
         Set<String> projectTags = submission.getProjectMetaData().getProjectTags();
-        boolean hasProjectTag = projectTags.contains("Human proteome project");
+        boolean hasProjectTag = projectTags.contains("Human Proteome Project");
         assertTrue(hasProjectTag);
     }
 
