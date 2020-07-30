@@ -28,19 +28,12 @@ public final class SubmissionValidator {
     private SubmissionValidator() {
     }
 
-
     /**
      * Full validation, also checks the existence and access permissions of the data files
      */
-    public static ValidationReport validateSubmission(Submission submission) {
-        ValidationReport report = null;
-        try {
-            report = validateSubmissionSyntax(submission);
-            report.combine(validateDataFiles(submission.getDataFiles()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+    public static ValidationReport validateSubmission(Submission submission) throws IOException {
+        ValidationReport report = validateSubmissionSyntax(submission);
+        report.combine(validateDataFiles(submission.getDataFiles()));
         return report;
     }
 
