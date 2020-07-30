@@ -4,7 +4,7 @@
     <groupId>uk.ac.ebi.pride</groupId>
     <artifactId>px-submission-core</artifactId>
     <name>px-submission-core</name>
-    <version>2.0.29</version>
+    <version>2.0.30-SNAPSHOT</version>
 
     <parent>
         <groupId>uk.ac.ebi.pride.architectural</groupId>
@@ -45,6 +45,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
     </dependencies>
 

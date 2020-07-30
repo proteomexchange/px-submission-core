@@ -197,4 +197,11 @@ public class Constant {
     public static final Pattern PRIDE_TEST_PATTERN = Pattern.compile("^PRDTEST\\d+");
 
     public static final Pattern URL_PATTERN = Pattern.compile("\\b(https?|ftp)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+
+    /**
+     * Pre-defined annotations
+     */
+
+    public static final String PROJECT_TAG_FILE="https://raw.githubusercontent.com/PRIDE-Utilities/pride-ontology/master/pride-annotations/project-tags.csv";
+
 }
