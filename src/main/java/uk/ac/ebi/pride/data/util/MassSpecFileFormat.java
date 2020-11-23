@@ -66,7 +66,8 @@ public enum MassSpecFileFormat {
     TSV("tsv", true, ProjectFileType.SEARCH),
     EXPERIMENTAL_DESIGN_TSV("tsv",true,ProjectFileType.EXPERIMENTAL_DESIGN),
     EXPERIMENTAL_DESIGN_TXT("txt",true,ProjectFileType.EXPERIMENTAL_DESIGN),
-    MSP("msp",true,ProjectFileType.SPECTRUM_LIBRARY);
+    MSP("msp",true,ProjectFileType.SPECTRUM_LIBRARY),
+    TOMIF("d",true,ProjectFileType.RAW);
 
 
 
