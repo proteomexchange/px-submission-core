@@ -427,7 +427,7 @@ public final class SubmissionValidator {
     public static ValidationReport validateKeywords(String keywords) {
         ValidationReport report = new ValidationReport();
 
-        if (noneEmptyString(keywords)) {
+        if (noneEmptyString(keywords) && keywords.length()<500) {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.SUCCESS, "Keywords are valid"));
         } else {
             report.addMessage(new ValidationMessage(ValidationMessage.Type.ERROR, "Keywords cannot be empty"));
